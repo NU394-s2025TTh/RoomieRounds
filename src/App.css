@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 :root {
   --primay: black;
   --bg-primay: white;
