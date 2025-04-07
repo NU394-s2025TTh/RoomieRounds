@@ -1,8 +1,10 @@
 import './App.css';
 
+import React, { useState } from 'react';
+
 import { Chore } from './types';
 
-const chores: Chore[] = [
+const initialChores: Chore[] = [
   { task: 'Wash Dishes', assignee: 'Anthony', day: 'Friday', color: 'bg-blue-600' },
   { task: 'Take out Trash', assignee: 'Joanne', day: 'Tuesday', color: 'bg-red-500' },
   { task: 'Pay Rent', assignee: 'David', day: 'Monday', color: 'bg-green-600' },
@@ -10,6 +12,30 @@ const chores: Chore[] = [
 ];
 
 function App() {
+  const [chores, setChores] = useState<Chore>(initialChores);
+  const [showForm, setShowForm] = useState<boolean>(false);
+
+  const [task, setTask] = useState<string>('');
+  const [assignee, setAssignee] = useState<string>('');
+  const [day, setDay] = useState<string>('');
+
+  const handleAddChore = () => {
+    if (!task || !assignee || !day) return;
+
+    const newChore: Chore = {
+      task,
+      assignee,
+      day,
+      color: 'bg-gray-600', // default color, or we could rotate through a palette
+    };
+
+    setChores([...chores, newChore]);
+    setTask('');
+    setAssignee('');
+    setDay('');
+    setShowForm(false);
+  };
+
   return (
     <div className="App">
       <div className="min-h-screen flex flex-col justify-between bg-white text-black font-serif p-4">
@@ -50,6 +76,39 @@ function App() {
           </div>
         </header>
 
+        {/* Chore Form */}
+        {showForm && (
+          <div className="p-4 border rounded-md shadow mb-4">
+            <input
+              type="text"
+              placeholder="Chore"
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+              className="w-full mb-2 p-2 border rounded"
+            />
+            <input
+              type="text"
+              placeholder="Assignee"
+              value={assignee}
+              onChange={(e) => setAssignee(e.target.value)}
+              className="w-full mb-2 p-2 border rounded"
+            />
+            <input
+              type="text"
+              placeholder="Day"
+              value={day}
+              onChange={(e) => setDay(e.target.value)}
+              className="w-full mb-2 p-2 border rounded"
+            />
+            <button
+              onClick={handleAddChore}
+              className="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full"
+            >
+              Add Chore
+            </button>
+          </div>
+        )}
+
         {/* Chore List */}
         <main className="flex flex-col gap-4 mt-4 flex-grow">
           {chores.map((chore, idx) => (
@@ -64,15 +123,16 @@ function App() {
 
         {/* Bottom Navigation */}
         <footer className="flex justify-around items-center mt-4 border-t pt-2">
-          <button>
-            {/* Plus button */}
+          {/* Plus button adds a new chore */}
+          <button onClick={() => setShowForm(!showForm)}>
+            {/* Plus Icon */}
             <svg
+              className="size-6"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="size-6"
             >
               <path
                 strokeLinecap="round"
