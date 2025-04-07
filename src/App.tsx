@@ -3,6 +3,7 @@ import './App.css';
 import React, { useState } from 'react';
 
 import { Chore } from './types';
+import { getColorForAssignee } from './utils/getColorForAssignee';
 
 const initialChores: Chore[] = [
   { task: 'Wash Dishes', assignee: 'Anthony', day: 'Friday', color: 'bg-blue-600' },
@@ -22,11 +23,13 @@ function App() {
   const handleAddChore = () => {
     if (!task || !assignee || !day) return;
 
+    const color = getColorForAssignee(assignee, chores);
+
     const newChore: Chore = {
       task,
       assignee,
       day,
-      color: 'bg-gray-600', // default color, or we could rotate through a palette
+      color,
     };
 
     setChores([...chores, newChore]);
