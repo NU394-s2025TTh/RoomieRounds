@@ -3,4 +3,5 @@ export interface Chore {
   assignee: string;
   day: string;
   color: string;
+  completed: boolean;
 }
