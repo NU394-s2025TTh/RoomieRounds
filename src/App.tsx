@@ -1,6 +1,6 @@
 import './App.css';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   AddIcon,
@@ -9,59 +9,38 @@ import {
   SettingsIcon,
   SwapIcon,
 } from './components/Icons';
+import { db, onValue, push, ref, set, update } from './firebase';
 import { Chore } from './types';
 import { getColorForAssignee } from './utils/getColorForAssignee';
 
-const initialChores: Chore[] = [
-  {
-    task: 'Take out the trash',
-    assignee: 'Anthony',
-    day: 'Tonight',
-    color: 'border-blue-500 bg-blue-100',
-    completed: false,
-  },
-  {
-    task: 'Wipe down counters',
-    assignee: 'Joanne',
-    day: 'Tonight',
-    color: 'border-green-500 bg-green-100',
-    completed: false,
-  },
-  {
-    task: 'Do the dishes',
-    assignee: 'David',
-    day: 'Tonight',
-    color: 'border-red-500 bg-red-100',
-    completed: false,
-  },
-  {
-    task: 'Clean the bathroom',
-    assignee: 'Anthony',
-    day: 'Due Yesterday',
-    color: 'border-gray-700 bg-gray-300',
-    completed: true,
-  },
-  {
-    task: 'Water the plants',
-    assignee: 'Aidan',
-    day: 'Due Last Sunday',
-    color: 'border-gray-700 bg-gray-300',
-    completed: true,
-  },
-];
-
 function App() {
-  const [chores, setChores] = useState<Chore[]>(initialChores);
+  const [chores, setChores] = useState<Chore[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [task, setTask] = useState<string>('');
   const [assignee, setAssignee] = useState<string>('');
   const [day, setDay] = useState<string>('');
 
-  const handleAddChore = () => {
+  useEffect(() => {
+    const choresRef = ref(db, 'chores');
+    onValue(choresRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const loadedChores = Object.entries(data as Record<string, Chore>).map(
+          ([id, value]) => ({
+            id,
+            ...value,
+          }),
+        );
+        setChores(loadedChores);
+      }
+    });
+  }, []);
+
+  const handleAddChore = async () => {
     if (!task || !assignee || !day) return;
 
-    const color = getColorForAssignee(assignee, chores);
-    const newChore: Chore = {
+    const color = `${getColorForAssignee(assignee)} bg-opacity-20`;
+    const newChore: Omit<Chore, 'id'> = {
       task,
       assignee,
       day,
@@ -69,7 +48,9 @@ function App() {
       completed: false,
     };
 
-    setChores([...chores, newChore]);
+    const choreRef = push(ref(db, 'chores'));
+    await set(choreRef, newChore);
+
     setTask('');
     setAssignee('');
     setDay('');
@@ -80,13 +61,26 @@ function App() {
     const assignees = chores.map((c) => c.assignee);
     const shuffled = [...assignees].sort(() => Math.random() - 0.5);
 
-    const swappedChores = chores.map((chore, i) => ({
-      ...chore,
-      assignee: shuffled[i],
-      color: getColorForAssignee(shuffled[i], chores),
-    }));
+    const updatedChores = chores.map((chore, i) => {
+      const newAssignee = shuffled[i];
+      return {
+        ...chore,
+        assignee: newAssignee,
+        color: `${getColorForAssignee(newAssignee)} bg-opacity-20`,
+      };
+    });
 
-    setChores(swappedChores);
+    updatedChores.forEach((chore) => {
+      if (chore.id) {
+        const choreRef = ref(db, `chores/${chore.id}`);
+        update(choreRef, {
+          assignee: chore.assignee,
+          color: chore.color,
+        });
+      }
+    });
+
+    setChores(updatedChores);
   };
 
   return (
@@ -157,6 +151,13 @@ function App() {
                       const updated = [...chores];
                       updated[idx].completed = !updated[idx].completed;
                       setChores(updated);
+
+                      // Sync to Firebase
+                      const choreId = updated[idx].id;
+                      if (choreId) {
+                        const choreRef = ref(db, `chores/${choreId}`);
+                        update(choreRef, { completed: updated[idx].completed });
+                      }
                     }}
                     className="w-5 h-5 mt-1 accent-black"
                   />
