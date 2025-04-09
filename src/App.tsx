@@ -177,54 +177,56 @@ function App() {
 
         {/* Chore List */}
         <main className="flex flex-col gap-4 mt-4 flex-grow">
-          {chores.map((chore, idx) => {
-            const cardClass = chore.completed
-              ? 'border-gray-700 bg-gray-300'
-              : chore.color;
+          {chores
+            .sort((a, b) => Number(a.completed) - Number(b.completed))
+            .map((chore, idx) => {
+              const cardClass = chore.completed
+                ? 'border-gray-700 bg-gray-300'
+                : chore.color;
 
-            return (
-              <div
-                key={idx}
-                className={`flex items-center justify-between p-4 rounded-xl border-2 shadow-sm ${cardClass}`}
-              >
-                <div className="flex items-start gap-2 w-full">
-                  {/* Checkbox */}
-                  <input
-                    type="checkbox"
-                    checked={chore.completed}
-                    onChange={() => {
-                      const updated = [...chores];
-                      updated[idx].completed = !updated[idx].completed;
-                      setChores(updated);
+              return (
+                <div
+                  key={idx}
+                  className={`flex items-center justify-between p-4 rounded-xl border-2 shadow-sm ${cardClass}`}
+                >
+                  <div className="flex items-start gap-2 w-full">
+                    {/* Checkbox */}
+                    <input
+                      type="checkbox"
+                      checked={chore.completed}
+                      onChange={() => {
+                        const updated = [...chores];
+                        updated[idx].completed = !updated[idx].completed;
+                        setChores(updated);
 
-                      // Sync to Firebase
-                      const choreId = updated[idx].id;
-                      if (choreId) {
-                        const choreRef = ref(db, `chores/${choreId}`);
-                        update(choreRef, { completed: updated[idx].completed });
-                      }
-                    }}
-                    className="w-5 h-5 mt-1 accent-black"
-                  />
-                  {/* Chore text */}
-                  <div className="flex flex-col w-full">
-                    <span
-                      className={`font-semibold ${chore.completed ? 'line-through text-black/60' : ''}`}
-                    >
-                      {chore.task}
-                    </span>
-                    <span className="italic text-sm text-black/60">{chore.day}</span>
+                        // Sync to Firebase
+                        const choreId = updated[idx].id;
+                        if (choreId) {
+                          const choreRef = ref(db, `chores/${choreId}`);
+                          update(choreRef, { completed: updated[idx].completed });
+                        }
+                      }}
+                      className="w-5 h-5 mt-1 accent-black"
+                    />
+                    {/* Chore text */}
+                    <div className="flex flex-col w-full">
+                      <span
+                        className={`font-semibold ${chore.completed ? 'line-through text-black/60' : ''}`}
+                      >
+                        {chore.task}
+                      </span>
+                      <span className="italic text-sm text-black/60">{chore.day}</span>
+                    </div>
+                    {/* Assignee */}
+                    <span className="font-semibold">{chore.assignee}</span>
+                    {/* Edit Button */}
+                    <button onClick={() => handleEditChore(chore)}>
+                      <EditIcon />
+                    </button>
                   </div>
-                  {/* Assignee */}
-                  <span className="font-semibold">{chore.assignee}</span>
-                  {/* Edit Button */}
-                  <button onClick={() => handleEditChore(chore)}>
-                    <EditIcon />
-                  </button>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </main>
 
         {/* Bottom Navigation */}
