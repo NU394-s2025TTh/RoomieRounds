@@ -6,3 +6,8 @@ export type Chore = {
   color: string;
   completed: boolean;
 };
+
+export type Person = {
+  name: string;
+  phoneNumber: string;
+};

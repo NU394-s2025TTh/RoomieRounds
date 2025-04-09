@@ -10,15 +10,17 @@ import {
   SwapIcon,
 } from './components/Icons';
 import { db, onValue, push, ref, set, update } from './firebase';
-import { Chore } from './types';
+import { Chore, Person } from './types';
 import { getColorForAssignee } from './utils/getColorForAssignee';
 
 function App() {
   const [chores, setChores] = useState<Chore[]>([]);
+  const [people, setPeople] = useState<Person[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [task, setTask] = useState<string>('');
   const [assignee, setAssignee] = useState<string>('');
   const [day, setDay] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
 
   useEffect(() => {
     const choresRef = ref(db, 'chores');
@@ -34,11 +36,38 @@ function App() {
         setChores(loadedChores);
       }
     });
+
+    // Fetch people (assignees and their phone numbers)
+    const peopleRef = ref(db, 'people');
+    onValue(peopleRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const loadedPeople = Object.entries(data).map(([name, value]) => ({
+          name,
+          phoneNumber: value.phoneNumber,
+        }));
+        setPeople(loadedPeople);
+      }
+    });
   }, []);
 
   const handleAddChore = async () => {
     if (!task || !assignee || !day) return;
 
+    // Find the person in the people list
+    let phone = phoneNumber;
+    const existingPerson = people.find((person) => person.name === assignee);
+    if (existingPerson) {
+      phone = existingPerson.phoneNumber;
+      console.log(phone);
+    }
+
+    // If person doesn't exist, add them to the people database
+    if (!existingPerson) {
+      const newPerson: Person = { name: assignee, phoneNumber };
+      const personRef = ref(db, `people/${assignee}`);
+      await set(personRef, newPerson);
+    }
     const color = `${getColorForAssignee(assignee)} bg-opacity-20`;
     const newChore: Omit<Chore, 'id'> = {
       task,
@@ -54,6 +83,7 @@ function App() {
     setTask('');
     setAssignee('');
     setDay('');
+    setPhoneNumber('');
     setShowForm(false);
   };
 
@@ -121,6 +151,15 @@ function App() {
               onChange={(e) => setDay(e.target.value)}
               className="w-full mb-2 p-2 border rounded"
             />
+            {!people.some((person) => person.name === assignee) && (
+              <input
+                type="text"
+                placeholder="Phone Number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="w-full mb-2 p-2 border rounded"
+              />
+            )}
             <button
               onClick={handleAddChore}
               className="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full"
