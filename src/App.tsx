@@ -87,11 +87,19 @@ function App() {
   };
 
   const handleEditChore = (chore: Chore) => {
-    setEditChore(chore);
-    setTask(chore.task);
-    setAssignee(chore.assignee);
-    setDay(chore.day);
-    setShowForm(true);
+    if (editChore && editChore.id === chore.id) {
+      setEditChore(null);
+      setShowForm(false);
+      setTask('');
+      setAssignee('');
+      setDay('');
+    } else {
+      setEditChore(chore);
+      setTask(chore.task);
+      setAssignee(chore.assignee);
+      setDay(chore.day);
+      setShowForm(true);
+    }
   };
 
   const handleSwapChores = () => {
