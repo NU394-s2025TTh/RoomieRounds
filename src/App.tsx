@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import {
   AddIcon,
+  EditIcon,
   NudgeIcon,
   ProfileIcon,
   SettingsIcon,
@@ -19,6 +20,7 @@ function App() {
   const [task, setTask] = useState<string>('');
   const [assignee, setAssignee] = useState<string>('');
   const [day, setDay] = useState<string>('');
+  const [editChore, setEditChore] = useState<Chore | null>(null);
 
   useEffect(() => {
     const choresRef = ref(db, 'chores');
@@ -55,6 +57,41 @@ function App() {
     setAssignee('');
     setDay('');
     setShowForm(false);
+  };
+
+  const handleUpdateChore = async () => {
+    if (!task || !assignee || !day || !editChore) return;
+
+    const color = `${getColorForAssignee(assignee)} bg-opacity-20`;
+    const updatedChore = {
+      task,
+      assignee,
+      day,
+      color: `${color} bg-opacity-20`,
+      completed: editChore.completed,
+    };
+
+    const choreRef = ref(db, `chores/${editChore.id}`);
+
+    await update(choreRef, updatedChore);
+    const updatedChores = chores.map((chore) =>
+      chore.id === editChore.id ? { ...chore, ...updatedChore } : chore,
+    );
+
+    setChores(updatedChores);
+    setTask('');
+    setAssignee('');
+    setDay('');
+    setShowForm(false);
+    setEditChore(null);
+  };
+
+  const handleEditChore = (chore: Chore) => {
+    setEditChore(chore);
+    setTask(chore.task);
+    setAssignee(chore.assignee);
+    setDay(chore.day);
+    setShowForm(true);
   };
 
   const handleSwapChores = () => {
@@ -122,10 +159,10 @@ function App() {
               className="w-full mb-2 p-2 border rounded"
             />
             <button
-              onClick={handleAddChore}
+              onClick={editChore ? handleUpdateChore : handleAddChore}
               className="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full"
             >
-              Add Chore
+              {editChore ? 'Update Chore' : 'Add Chore'}
             </button>
           </div>
         )}
@@ -172,6 +209,10 @@ function App() {
                   </div>
                   {/* Assignee */}
                   <span className="font-semibold">{chore.assignee}</span>
+                  {/* Edit Button */}
+                  <button onClick={() => handleEditChore(chore)}>
+                    <EditIcon />
+                  </button>
                 </div>
               </div>
             );
