@@ -220,7 +220,7 @@ function App() {
                     {/* Assignee */}
                     <span className="font-semibold">{chore.assignee}</span>
                     {/* Edit Button */}
-                    <button onClick={() => handleEditChore(chore)}>
+                    <button onClick={() => handleEditChore(chore)} className="ml-6">
                       <EditIcon />
                     </button>
                   </div>
