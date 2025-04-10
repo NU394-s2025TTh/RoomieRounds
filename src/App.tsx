@@ -130,13 +130,13 @@ function App() {
 
   return (
     <div className="App">
-      <div className="min-h-screen flex flex-col justify-between bg-white text-black font-serif p-4">
+      <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
         {/* Header */}
-        <header className="text-center border-b pb-2">
+        <header className="text-center border-b font-[Atma] pb-2">
           <div className="flex justify-between items-center mb-2">
             {/* Settings Icon */}
             <SettingsIcon />
-            <h1 className="text-lg font-semibold">RoomieRounds</h1>
+            <h1 className="text-2xl font-semibold">RoomieRounds</h1>
             {/* Profile Icon */}
             <ProfileIcon />
           </div>
