@@ -1,9 +1,9 @@
 export const COLORS = [
-  'bg-blue-600',
-  'bg-red-500',
-  'bg-green-600',
-  'bg-purple-600',
-  'bg-yellow-500',
-  'bg-pink-500',
-  'bg-teal-600',
+  'bg-emerald-200',
+  'bg-blue-300',
+  'bg-indigo-300',
+  'bg-violet-300',
+  'bg-fuchsia-300',
+  'bg-rose-300',
+  'bg-pink-300',
 ];

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atma:wght@300;400;500;600;700&family=Caveat:wght@400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Rancho&family=Shadows+Into+Light&display=swap');
 @import 'tailwindcss';
 
 :root {
@@ -33,10 +35,6 @@ button {
   outline: none;
   border: none;
   border-radius: 8px;
-  padding: 10px 35px;
-
-  background: #845ec2;
-  color: white;
 }
 
 @media (prefers-reduced-motion: no-preference) {
