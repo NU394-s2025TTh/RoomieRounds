@@ -220,7 +220,10 @@ function App() {
                     {/* Assignee */}
                     <span className="font-semibold">{chore.assignee}</span>
                     {/* Edit Button */}
-                    <button onClick={() => handleEditChore(chore)} className="ml-6">
+                    <button
+                      onClick={() => handleEditChore(chore)}
+                      className="ml-6 bg-transparent"
+                    >
                       <EditIcon />
                     </button>
                   </div>
@@ -232,15 +235,15 @@ function App() {
         {/* Bottom Navigation */}
         <footer className="flex justify-around items-center mt-4 border-t pt-2">
           {/* Add */}
-          <button onClick={() => setShowForm(!showForm)}>
+          <button className="bg-violet-500" onClick={() => setShowForm(!showForm)}>
             <AddIcon />
           </button>
           {/* Swap */}
-          <button onClick={handleSwapChores}>
+          <button className="bg-violet-500" onClick={handleSwapChores}>
             <SwapIcon />
           </button>
           {/* Nudge */}
-          <button>
+          <button className="bg-violet-500">
             <NudgeIcon />
           </button>
         </footer>
