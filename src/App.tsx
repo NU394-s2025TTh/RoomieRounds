@@ -59,6 +59,8 @@ function App() {
     setShowForm(false);
   };
 
+  // Wrote the following function with Github Copilot enabled
+
   const handleUpdateChore = async () => {
     if (!task || !assignee || !day || !editChore) return;
 
@@ -189,7 +191,7 @@ function App() {
                   key={idx}
                   className={`flex items-center justify-between p-4 rounded-xl border-2 shadow-sm ${cardClass}`}
                 >
-                  <div className="flex items-start gap-2 w-full">
+                  <div className="flex items-center gap-2 w-full">
                     {/* Checkbox */}
                     <input
                       type="checkbox"
@@ -206,10 +208,10 @@ function App() {
                           update(choreRef, { completed: updated[idx].completed });
                         }
                       }}
-                      className="w-5 h-5 mt-1 accent-black"
+                      className="w-5 h-5 accent-black"
                     />
                     {/* Chore text */}
-                    <div className="flex flex-col w-full">
+                    <div className="flex flex-col text-left w-full">
                       <span
                         className={`font-semibold ${chore.completed ? 'line-through text-black/60' : ''}`}
                       >
@@ -222,7 +224,7 @@ function App() {
                     {/* Edit Button */}
                     <button
                       onClick={() => handleEditChore(chore)}
-                      className="ml-6 bg-transparent"
+                      className="bg-transparent w-[32px] h-[32px] p-1 text-black"
                     >
                       <EditIcon />
                     </button>
@@ -235,15 +237,21 @@ function App() {
         {/* Bottom Navigation */}
         <footer className="flex justify-around items-center mt-4 border-t pt-2">
           {/* Add */}
-          <button className="bg-violet-500" onClick={() => setShowForm(!showForm)}>
+          <button
+            className="bg-slate-500 py-[10px] px-[32px] text-white"
+            onClick={() => setShowForm(!showForm)}
+          >
             <AddIcon />
           </button>
           {/* Swap */}
-          <button className="bg-violet-500" onClick={handleSwapChores}>
+          <button
+            className="bg-slate-500 py-[10px] px-[32px] text-white"
+            onClick={handleSwapChores}
+          >
             <SwapIcon />
           </button>
           {/* Nudge */}
-          <button className="bg-violet-500">
+          <button className="bg-slate-500 py-[10px] px-[32px] text-white">
             <NudgeIcon />
           </button>
         </footer>

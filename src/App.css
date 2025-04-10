@@ -35,9 +35,6 @@ button {
   outline: none;
   border: none;
   border-radius: 8px;
-  padding: 10px 35px;
-
-  color: white;
 }
 
 @media (prefers-reduced-motion: no-preference) {
