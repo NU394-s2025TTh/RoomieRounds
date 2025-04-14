@@ -5,9 +5,9 @@ import React, { useEffect, useState } from 'react';
 import {
   AddIcon,
   EditIcon,
-  NudgeIcon,
-  ProfileIcon,
-  SettingsIcon,
+  // NudgeIcon,
+  // ProfileIcon,
+  // SettingsIcon,
   SwapIcon,
 } from './components/Icons';
 import { db, onValue, push, ref, set, update } from './firebase';
@@ -135,12 +135,13 @@ function App() {
       <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
         {/* Header */}
         <header className="text-center border-b font-[Atma] pb-2">
-          <div className="flex justify-between items-center mb-2">
+          {/* <div className="flex justify-between items-center mb-2"> */}
+          <div className="flex justify-center items-center mb-2">
             {/* Settings Icon */}
-            <SettingsIcon />
+            {/* <SettingsIcon /> */}
             <h1 className="text-2xl font-semibold">RoomieRounds</h1>
             {/* Profile Icon */}
-            <ProfileIcon />
+            {/* <ProfileIcon /> */}
           </div>
         </header>
 
@@ -170,7 +171,7 @@ function App() {
             />
             <button
               onClick={editChore ? handleUpdateChore : handleAddChore}
-              className="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full"
+              className="bg-slate-500 text-white font-semibold px-4 py-2 rounded-md mt-2 w-full hover:bg-slate-600 transition"
             >
               {editChore ? 'Update Chore' : 'Add Chore'}
             </button>
@@ -251,9 +252,9 @@ function App() {
             <SwapIcon />
           </button>
           {/* Nudge */}
-          <button className="bg-slate-500 py-[10px] px-[32px] text-white">
+          {/* <button className="bg-slate-500 py-[10px] px-[32px] text-white">
             <NudgeIcon />
-          </button>
+          </button> */}
         </footer>
       </div>
     </div>
