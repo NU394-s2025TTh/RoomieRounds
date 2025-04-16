@@ -1,6 +1,8 @@
 import './App.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import React, { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
 
 import {
   AddIcon,
@@ -162,11 +164,16 @@ function App() {
               onChange={(e) => setAssignee(e.target.value)}
               className="w-full mb-2 p-2 border rounded"
             />
-            <input
-              type="text"
-              placeholder="Day"
-              value={day}
-              onChange={(e) => setDay(e.target.value)}
+            <DatePicker
+              selected={day ? new Date(day) : null}
+              onChange={(date: Date | null) => {
+                if (date) setDay(date.toISOString());
+              }}
+              showTimeSelect
+              timeFormat="h:mm aa"
+              timeIntervals={15}
+              dateFormat="MMMM d, yyyy h:mm aa"
+              placeholderText="Select date and time"
               className="w-full mb-2 p-2 border rounded"
             />
             <button
@@ -181,7 +188,16 @@ function App() {
         {/* Chore List */}
         <main className="flex flex-col gap-4 mt-4 flex-grow">
           {chores
-            .sort((a, b) => Number(a.completed) - Number(b.completed))
+            .sort((a, b) => {
+              // Sort by completion first
+              if (a.completed !== b.completed) {
+                return Number(a.completed) - Number(b.completed);
+              }
+              // Then sort by date (earliest first)
+              const dateA = new Date(a.day).getTime();
+              const dateB = new Date(b.day).getTime();
+              return dateA - dateB;
+            })
             .map((chore, idx) => {
               const cardClass = chore.completed
                 ? 'border-gray-700 bg-gray-300'
@@ -218,7 +234,9 @@ function App() {
                       >
                         {chore.task}
                       </span>
-                      <span className="italic text-sm text-black/60">{chore.day}</span>
+                      <span className="italic text-sm text-black/60">
+                        {new Date(chore.day).toLocaleString()}
+                      </span>
                     </div>
                     {/* Assignee */}
                     <span className="font-semibold">{chore.assignee}</span>
