@@ -15,6 +15,7 @@ import {
 import { db, onValue, push, ref, set, update } from './firebase';
 import { Chore } from './types';
 import { getColorForAssignee } from './utils/getColorForAssignee';
+import { formatDueDate } from './utils/getHumanReadableDay';
 
 function App() {
   const [chores, setChores] = useState<Chore[]>([]);
@@ -235,7 +236,7 @@ function App() {
                         {chore.task}
                       </span>
                       <span className="italic text-sm text-black/60">
-                        {new Date(chore.day).toLocaleString()}
+                        {formatDueDate(chore.day)}
                       </span>
                     </div>
                     {/* Assignee */}
