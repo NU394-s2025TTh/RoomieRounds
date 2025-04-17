@@ -3,10 +3,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import React, { useEffect, useState } from 'react';
 
+import { Status } from '../types/status';
+import FilterModal from './components/FilterModal';
 import {
   AddIcon,
   DeleteIcon,
   EditIcon,
+  FilterIcon,
   // NudgeIcon,
   // ProfileIcon,
   // SettingsIcon,
@@ -20,11 +23,17 @@ import { formatDueDate } from './utils/getHumanReadableDay';
 
 function App() {
   const [chores, setChores] = useState<Chore[]>([]);
+  const [filteredChores, setFilteredChores] = useState<Chore[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [task, setTask] = useState<string>('');
   const [assignee, setAssignee] = useState<string>('');
   const [day, setDay] = useState<string>('');
   const [editChore, setEditChore] = useState<Chore | null>(null);
+
+  // Filters
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [completedFilter, setCompletedFilter] = useState<Status>('all');
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('all');
 
   useEffect(() => {
     const choresRef = ref(db, 'chores');
@@ -38,9 +47,14 @@ function App() {
           }),
         );
         setChores(loadedChores);
+        setFilteredChores(loadedChores);
       }
     });
   }, []);
+
+  useEffect(() => {
+    handleApplyFilters(completedFilter, assigneeFilter);
+  }, [chores, completedFilter, assigneeFilter]);
 
   const handleAddChore = async () => {
     if (!task || !assignee || !day) return;
@@ -139,6 +153,23 @@ function App() {
     setShowForm(false);
   };
 
+  const handleApplyFilters = (status: Status, assignee: string) => {
+    let filtered = [...chores];
+
+    if (status !== 'all') {
+      filtered = filtered.filter((chore) =>
+        status === 'completed' ? chore.completed : !chore.completed,
+      );
+    }
+
+    if (assignee !== 'all') {
+      filtered = filtered.filter((chore) => chore.assignee === assignee);
+    }
+
+    setFilteredChores(filtered);
+    setShowFilters(false);
+  };
+
   return (
     <div className="App">
       <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
@@ -149,7 +180,30 @@ function App() {
         </header>
 
         <main className="flex flex-col gap-4 mt-4 flex-grow">
-          {chores
+          <div className="flex justify-end">
+            <button
+              onClick={() => setShowFilters(true)} // Open the filter modal
+              type="button"
+            >
+              <FilterIcon />
+            </button>
+            {showFilters && (
+              <FilterModal
+                onClose={() => setShowFilters(false)} // Close the modal
+                onApplyFilters={(status, assignee) => {
+                  setCompletedFilter(status);
+                  setAssigneeFilter(assignee);
+                  handleApplyFilters(status, assignee);
+                }}
+                currentCompletedFilter={completedFilter}
+                currentAssigneeFilter={assigneeFilter}
+                assignees={chores
+                  .map((chore) => chore.assignee)
+                  .filter((value, index, self) => self.indexOf(value) === index)}
+              />
+            )}
+          </div>
+          {filteredChores
             .sort((a, b) => {
               if (a.completed !== b.completed) {
                 return Number(a.completed) - Number(b.completed);
@@ -224,7 +278,7 @@ function App() {
                 setEditChore(null);
                 setShowForm(true);
               }}
-              className="bg-slate-500 py-[10px] px-[32px] text-white cursor-pointer"
+              className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
               type="button"
             >
               <AddIcon />
@@ -251,7 +305,7 @@ function App() {
             )}
           </div>
           <button
-            className="bg-slate-500 py-[10px] px-[32px] text-white cursor-pointer"
+            className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
             onClick={handleSwapChores}
           >
             <SwapIcon />
