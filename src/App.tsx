@@ -134,6 +134,11 @@ function App() {
   };
 
   const handleDeleteChore = async (choreId: string) => {
+    const confirmable = window.confirm('Are you sure you want to delete this chore?');
+
+    // if the user isnt sure, then leave this function
+    if (!confirmable) return;
+
     const choreRef = ref(db, `chores/${choreId}`);
     await set(choreRef, null);
 
