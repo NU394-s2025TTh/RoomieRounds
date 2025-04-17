@@ -225,7 +225,7 @@ function App() {
                     {/* Edit Button */}
                     <button
                       onClick={() => handleEditChore(chore)}
-                      className="bg-transparent w-[32px] h-[32px] p-1 text-black"
+                      className="bg-transparent w-[32px] h-[32px] p-1 text-black cursor-pointer"
                     >
                       <EditIcon />
                     </button>
@@ -239,14 +239,14 @@ function App() {
         <footer className="flex justify-around items-center mt-4 border-t pt-2">
           {/* Add */}
           <button
-            className="bg-slate-500 py-[10px] px-[32px] text-white"
+            className="bg-slate-500 py-[10px] px-[32px] text-white cursor-pointer"
             onClick={() => setShowForm(!showForm)}
           >
             <AddIcon />
           </button>
           {/* Swap */}
           <button
-            className="bg-slate-500 py-[10px] px-[32px] text-white"
+            className="bg-slate-500 py-[10px] px-[32px] text-white cursor-pointer"
             onClick={handleSwapChores}
           >
             <SwapIcon />
