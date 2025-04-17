@@ -1,6 +1,8 @@
 import './App.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import React, { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
 
 import {
   AddIcon,
@@ -14,6 +16,7 @@ import Modal from './components/Modal';
 import { db, onValue, push, ref, set, update } from './firebase';
 import { Chore } from './types';
 import { getColorForAssignee } from './utils/getColorForAssignee';
+import { formatDueDate } from './utils/getHumanReadableDay';
 
 function App() {
   const [chores, setChores] = useState<Chore[]>([]);
@@ -131,6 +134,18 @@ function App() {
     setChores(updatedChores);
   };
 
+  const handleDeleteChore = async (choreId: string) => {
+    const confirmable = window.confirm('Are you sure you want to delete this chore?');
+
+    // if the user isnt sure, then leave this function
+    if (!confirmable) return;
+
+    const choreRef = ref(db, `chores/${choreId}`);
+    await set(choreRef, null);
+
+    setChores((prev) => prev.filter((chore) => chore.id !== choreId));
+  };
+
   return (
     <div className="App">
       <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
@@ -149,7 +164,16 @@ function App() {
         {/* Chore List */}
         <main className="flex flex-col gap-4 mt-4 flex-grow">
           {chores
-            .sort((a, b) => Number(a.completed) - Number(b.completed))
+            .sort((a, b) => {
+              // Sort by completion first
+              if (a.completed !== b.completed) {
+                return Number(a.completed) - Number(b.completed);
+              }
+              // Then sort by date (earliest first)
+              const dateA = new Date(a.day).getTime();
+              const dateB = new Date(b.day).getTime();
+              return dateA - dateB;
+            })
             .map((chore, idx) => {
               const cardClass = chore.completed
                 ? 'border-gray-700 bg-gray-300'
@@ -186,7 +210,9 @@ function App() {
                       >
                         {chore.task}
                       </span>
-                      <span className="italic text-sm text-black/60">{chore.day}</span>
+                      <span className="italic text-sm text-black/60">
+                        {formatDueDate(chore.day)}
+                      </span>
                     </div>
                     {/* Assignee */}
                     <span className="font-semibold">{chore.assignee}</span>
@@ -196,6 +222,15 @@ function App() {
                       className="bg-transparent w-[32px] h-[32px] p-1 text-black"
                     >
                       <EditIcon />
+                    </button>
+                    {/* Delete Button */}
+                    <button
+                      onClick={() => handleDeleteChore(chore.id!)}
+                      // there will ALWAYS be an ID, there SHOULD be... at least.
+                      // this is why we use "!"
+                      className="bg-transparent w-[32px] h-[32px] p-1 text-red-500"
+                    >
+                      🗑️
                     </button>
                   </div>
                 </div>
