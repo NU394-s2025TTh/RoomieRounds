@@ -10,6 +10,7 @@ import {
   // SettingsIcon,
   SwapIcon,
 } from './components/Icons';
+import Modal from './components/Modal';
 import { db, onValue, push, ref, set, update } from './firebase';
 import { Chore } from './types';
 import { getColorForAssignee } from './utils/getColorForAssignee';
@@ -145,39 +146,6 @@ function App() {
           </div>
         </header>
 
-        {/* Chore Form */}
-        {showForm && (
-          <div className="p-4 border rounded-md shadow mb-4">
-            <input
-              type="text"
-              placeholder="Chore"
-              value={task}
-              onChange={(e) => setTask(e.target.value)}
-              className="w-full mb-2 p-2 border rounded"
-            />
-            <input
-              type="text"
-              placeholder="Assignee"
-              value={assignee}
-              onChange={(e) => setAssignee(e.target.value)}
-              className="w-full mb-2 p-2 border rounded"
-            />
-            <input
-              type="text"
-              placeholder="Day"
-              value={day}
-              onChange={(e) => setDay(e.target.value)}
-              className="w-full mb-2 p-2 border rounded"
-            />
-            <button
-              onClick={editChore ? handleUpdateChore : handleAddChore}
-              className="bg-slate-500 text-white font-semibold px-4 py-2 rounded-md mt-2 w-full hover:bg-slate-600 transition"
-            >
-              {editChore ? 'Update Chore' : 'Add Chore'}
-            </button>
-          </div>
-        )}
-
         {/* Chore List */}
         <main className="flex flex-col gap-4 mt-4 flex-grow">
           {chores
@@ -237,13 +205,38 @@ function App() {
 
         {/* Bottom Navigation */}
         <footer className="flex justify-around items-center mt-4 border-t pt-2">
-          {/* Add */}
-          <button
-            className="bg-slate-500 py-[10px] px-[32px] text-white"
-            onClick={() => setShowForm(!showForm)}
-          >
-            <AddIcon />
-          </button>
+          <div>
+            {/* Add Icon connected to Modal */}
+            <button
+              onClick={() => setShowForm(true)}
+              className="bg-slate-500 py-[10px] px-[32px] text-white"
+              type="button"
+            >
+              <AddIcon></AddIcon>
+            </button>
+            {showForm && (
+              <Modal
+                onClose={() => setShowForm(false)}
+                modalTitle="Add Chore"
+                taskHandler={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setTask(e.target.value)
+                }
+                assigneeHandler={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setAssignee(e.target.value)
+                }
+                dayHandler={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setDay(e.target.value)
+                }
+                taskValue={task}
+                assigneeValue={assignee}
+                dayValue={day}
+                handleAddChore={handleAddChore}
+                handleUpdateChore={handleUpdateChore}
+                editChore={editChore}
+              />
+            )}
+          </div>
+
           {/* Swap */}
           <button
             className="bg-slate-500 py-[10px] px-[32px] text-white"
