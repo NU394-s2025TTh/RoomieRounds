@@ -11,13 +11,12 @@ export default function ModalWrapper({ modalTitle }) {
     <div>
       <button
         onClick={() => setIsOpen(true)}
-        className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        className="bg-slate-500 py-[10px] px-[32px] text-white"
         type="button"
       >
-        Toggle modal
+        {/* todo: add icon here */}
       </button>
-
-      {isOpen && <Modal onClose={() => setIsOpen(false)} modalTitle={modalTitle} />}
+      {isOpen && <Modal onClose={() => setIsOpen(false)} modalTitle={modalTitle} />}{' '}
     </div>
   );
 }
@@ -27,18 +26,19 @@ export function Modal({ onClose, modalTitle }) {
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/50"
+      className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/50 px-4 px-6"
     >
       {/* -------- Modal content -------- */}
-      <div className="relative rounded-lg bg-slate-100">
+      <div className="relative rounded-lg bg-slate-100 w-full max-w-2xl max-h-full">
         {/* -------- Modal header -------- */}
-        <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-slate-500">
-          <h3 className="text-xl font-semibold text-black">{modalTitle}</h3>
+        <div className="flex justify-between align-middle p-4 md:p-5 border-b rounded-t border-slate-500">
+          <h3 className="text-center text-2xl font-semibold text-black">{modalTitle}</h3>
 
+          {/* -------- Close button -------- */}
           <button
             onClick={onClose}
             type="button"
-            className="text-gray-500 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+            className="text-gray-900 bg-transparent hover:bg-gray-300 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
           >
             <svg
               className="w-3 h-3"
@@ -66,15 +66,14 @@ export function Modal({ onClose, modalTitle }) {
             <div className="col-span-2">
               <label
                 htmlFor="task"
-                className="block mb-2 text-medium font-medium text-black-900"
+                className="block mb-2 text-lg font-medium text-black-900"
               >
                 Task Description
               </label>
+              {/* todo: onChange={(e) => setTask(e.target.value)} */}
               <input
                 type="text"
-                name="task"
-                id="task"
-                className="bg-slate-200 border border-slate-500 text-slate-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
                 placeholder="Type task description here"
                 required=""
               />
@@ -84,15 +83,14 @@ export function Modal({ onClose, modalTitle }) {
             <div className="col-span-2">
               <label
                 htmlFor="assignee"
-                className="block mb-2 text-medium font-medium text-black-900"
+                className="block mb-2 text-lg text-medium font-medium text-black-900"
               >
                 Assignee
               </label>
+              {/* todo: onChange={(e) => setAssignee(e.target.value)} */}
               <input
                 type="text"
-                name="assignee"
-                id="assignee"
-                className="bg-slate-200 border border-slate-500 text-slate-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
                 placeholder="Type household member name here"
                 required=""
               />
@@ -102,24 +100,24 @@ export function Modal({ onClose, modalTitle }) {
             <div className="col-span-2">
               <label
                 htmlFor="day"
-                className="block mb-2 text-medium font-medium text-black-900"
+                className="block mb-2 text-lg text-medium font-medium text-black-900"
               >
                 Due Date
               </label>
-              <textarea
+              {/* onChange={(e) => setDay(e.target.value)} */}
+              <input
                 type="text"
-                name="day"
-                id="day"
-                className="bg-slate-200 border border-slate-500 text-slate-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
                 placeholder="Type due date here"
                 required=""
-              ></textarea>
+              ></input>
             </div>
           </div>
 
+          {/* -------- Modal action button -------- */}
           <button
             type="submit"
-            className="text-white inline-flex items-center bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg !text-sm px-3 py-1.5 text-center"
+            className="inline-flex items-center justify-center bg-slate-500 text-white font-semibold px-4 py-2 rounded-md mt-2 w-full hover:bg-slate-600 transition"
           >
             <svg
               className="me-1 -ms-1 w-5 h-5"
@@ -140,25 +138,3 @@ export function Modal({ onClose, modalTitle }) {
     </div>
   );
 }
-
-// ! could be helpful for future reference if choose to add tags to chores
-/*
-<div className="col-span-2 sm:col-span-1">
-<label
-  htmlFor="day"
-  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
->
-  Due Date
-</label>
-<select
-  id="room"
-  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
->
-  <option selected="">Select room</option>
-  <option value="TV">TV/Monitors</option>
-  <option value="PC">PC</option>
-  <option value="GA">Gaming/Console</option>
-  <option value="PH">Phones</option>
-</select>
-</div>
-*/
