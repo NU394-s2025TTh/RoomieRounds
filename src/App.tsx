@@ -252,13 +252,13 @@ function App() {
                     <span className="font-semibold">{chore.assignee}</span>
                     <button
                       onClick={() => handleEditChore(chore)}
-                      className="bg-transparent w-[32px] h-[32px] p-1 text-black"
+                      className="bg-transparent w-[32px] h-[32px] p-1 text-black cursor-pointer"
                     >
                       <EditIcon />
                     </button>
                     <button
                       onClick={() => handleDeleteChore(chore.id!)}
-                      className="bg-transparent w-[32px] h-[32px] p-1 text-red-500"
+                      className="bg-transparent w-[32px] h-[32px] p-1 text-red-500 cursor-pointer"
                     >
                       <DeleteIcon />
                     </button>
