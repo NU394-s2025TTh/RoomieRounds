@@ -2,26 +2,20 @@
 // After converting from HTML to JSX manually, prompted chatGPT to double check work: "Is this valid JSX for a React app? [inserted converted code here]"
 
 import React from 'react';
-import { useState } from 'react';
 
-export default function ModalWrapper({ modalTitle }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div>
-      <button
-        onClick={() => setIsOpen(true)}
-        className="bg-slate-500 py-[10px] px-[32px] text-white"
-        type="button"
-      >
-        {/* todo: add icon here */}
-      </button>
-      {isOpen && <Modal onClose={() => setIsOpen(false)} modalTitle={modalTitle} />}{' '}
-    </div>
-  );
-}
-
-export function Modal({ onClose, modalTitle }) {
+export default function Modal({
+  onClose,
+  modalTitle,
+  taskHandler,
+  assigneeHandler,
+  dayHandler,
+  taskValue,
+  assigneeValue,
+  dayValue,
+  handleAddChore,
+  handleUpdateChore,
+  editChore,
+}) {
   return (
     <div
       role="dialog"
@@ -70,12 +64,13 @@ export function Modal({ onClose, modalTitle }) {
               >
                 Task Description
               </label>
-              {/* todo: onChange={(e) => setTask(e.target.value)} */}
               <input
                 type="text"
+                value={taskValue}
                 className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
                 placeholder="Type task description here"
                 required=""
+                onChange={taskHandler}
               />
             </div>
 
@@ -87,12 +82,13 @@ export function Modal({ onClose, modalTitle }) {
               >
                 Assignee
               </label>
-              {/* todo: onChange={(e) => setAssignee(e.target.value)} */}
               <input
                 type="text"
+                value={assigneeValue}
                 className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
                 placeholder="Type household member name here"
                 required=""
+                onChange={assigneeHandler}
               />
             </div>
 
@@ -104,12 +100,13 @@ export function Modal({ onClose, modalTitle }) {
               >
                 Due Date
               </label>
-              {/* onChange={(e) => setDay(e.target.value)} */}
               <input
                 type="text"
+                value={dayValue}
                 className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
                 placeholder="Type due date here"
                 required=""
+                onChange={dayHandler}
               ></input>
             </div>
           </div>
@@ -118,6 +115,7 @@ export function Modal({ onClose, modalTitle }) {
           <button
             type="submit"
             className="inline-flex items-center justify-center bg-slate-500 text-white font-semibold px-4 py-2 rounded-md mt-2 w-full hover:bg-slate-600 transition"
+            onClick={editChore ? handleUpdateChore : handleAddChore}
           >
             <svg
               className="me-1 -ms-1 w-5 h-5"
