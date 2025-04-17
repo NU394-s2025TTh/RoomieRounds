@@ -133,6 +133,18 @@ function App() {
     setChores(updatedChores);
   };
 
+  const handleDeleteChore = async (choreId: string) => {
+    const confirmable = window.confirm('Are you sure you want to delete this chore?');
+
+    // if the user isnt sure, then leave this function
+    if (!confirmable) return;
+
+    const choreRef = ref(db, `chores/${choreId}`);
+    await set(choreRef, null);
+
+    setChores((prev) => prev.filter((chore) => chore.id !== choreId));
+  };
+
   return (
     <div className="App">
       <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
@@ -247,6 +259,15 @@ function App() {
                       className="bg-transparent w-[32px] h-[32px] p-1 text-black"
                     >
                       <EditIcon />
+                    </button>
+                    {/* Delete Button */}
+                    <button
+                      onClick={() => handleDeleteChore(chore.id!)}
+                      // there will ALWAYS be an ID, there SHOULD be... at least.
+                      // this is why we use "!"
+                      className="bg-transparent w-[32px] h-[32px] p-1 text-red-500"
+                    >
+                      🗑️
                     </button>
                   </div>
                 </div>
