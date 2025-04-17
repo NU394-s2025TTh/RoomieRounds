@@ -1,15 +1,17 @@
-// reference used for original HTML-version code example of this component: https://flowbite.com/docs/components/modal/
-// After converting from HTML to JSX manually, prompted chatGPT to double check work: "Is this valid JSX for a React app? [inserted converted code here]"
+// Modal.tsx
+
+import 'react-datepicker/dist/react-datepicker.css';
+
 import React from 'react';
+import DatePicker from 'react-datepicker';
 
 import { Chore } from '../types';
 
-// GitHub Copilot was used to generate the following interface for the Modal component
 interface ModalProps {
   onClose: () => void;
   taskHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   assigneeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  dayHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setDay: (val: string) => void;
   taskValue: string;
   assigneeValue: string;
   dayValue: string;
@@ -22,7 +24,7 @@ export default function Modal({
   onClose,
   taskHandler,
   assigneeHandler,
-  dayHandler,
+  setDay,
   taskValue,
   assigneeValue,
   dayValue,
@@ -36,15 +38,13 @@ export default function Modal({
       aria-modal="true"
       className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/50 px-4 px-6"
     >
-      {/* -------- Modal content -------- */}
       <div className="relative rounded-lg bg-slate-100 w-full max-w-2xl max-h-full">
-        {/* -------- Modal header -------- */}
+        {/* Header */}
         <div className="flex justify-between align-middle p-4 md:p-5 border-b rounded-t border-slate-500">
           <h3 className="text-center text-2xl font-semibold text-black">
             {editChore ? 'Update Chore' : 'Add Chore'}
           </h3>
 
-          {/* -------- Close button -------- */}
           <button
             onClick={onClose}
             type="button"
@@ -69,13 +69,13 @@ export default function Modal({
           </button>
         </div>
 
-        {/* -------- Modal body -------- */}
+        {/* Body */}
         <form
           className="p-5 md:p-5"
           onSubmit={editChore ? handleUpdateChore : handleAddChore}
         >
           <div className="flex flex-col gap-4 mb-4">
-            {/* -------- Task description input -------- */}
+            {/* Task */}
             <div className="col-span-2">
               <label
                 htmlFor="task"
@@ -92,11 +92,11 @@ export default function Modal({
               />
             </div>
 
-            {/* -------- Assignee name input -------- */}
+            {/* Assignee */}
             <div className="col-span-2">
               <label
                 htmlFor="assignee"
-                className="block mb-2 text-lg text-medium font-medium text-black-900"
+                className="block mb-2 text-lg font-medium text-black-900"
               >
                 Assignee
               </label>
@@ -109,25 +109,30 @@ export default function Modal({
               />
             </div>
 
-            {/* --------  Due date input -------- */}
+            {/* Date Picker */}
             <div className="col-span-2">
               <label
                 htmlFor="day"
-                className="block mb-2 text-lg text-medium font-medium text-black-900"
+                className="block mb-2 text-lg font-medium text-black-900"
               >
                 Due Date
               </label>
-              <input
-                type="text"
-                value={dayValue}
+              <DatePicker
+                selected={dayValue ? new Date(dayValue) : null}
+                onChange={(date: Date | null) => {
+                  if (date) setDay(date.toISOString());
+                }}
+                showTimeSelect
+                timeFormat="h:mm aa"
+                timeIntervals={15}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                placeholderText="Select date and time"
                 className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
-                placeholder="DD/MM/YYYY"
-                onChange={dayHandler}
-              ></input>
+              />
             </div>
           </div>
 
-          {/* -------- Modal action button -------- */}
+          {/* Submit Button */}
           <button
             type="submit"
             className="inline-flex items-center justify-center bg-slate-500 text-white font-semibold px-4 py-2 rounded-md mt-2 w-full hover:bg-slate-600 transition"
