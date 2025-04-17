@@ -1,18 +1,22 @@
 import './App.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import React, { useEffect, useState } from 'react';
 
 import {
   AddIcon,
+  DeleteIcon,
   EditIcon,
   // NudgeIcon,
   // ProfileIcon,
   // SettingsIcon,
   SwapIcon,
 } from './components/Icons';
+import Modal from './components/Modal';
 import { db, onValue, push, ref, set, update } from './firebase';
 import { Chore } from './types';
 import { getColorForAssignee } from './utils/getColorForAssignee';
+import { formatDueDate } from './utils/getHumanReadableDay';
 
 function App() {
   const [chores, setChores] = useState<Chore[]>([]);
@@ -53,13 +57,8 @@ function App() {
     const choreRef = push(ref(db, 'chores'));
     await set(choreRef, newChore);
 
-    setTask('');
-    setAssignee('');
-    setDay('');
-    setShowForm(false);
+    resetForm();
   };
-
-  // Wrote the following function with Github Copilot enabled
 
   const handleUpdateChore = async () => {
     if (!task || !assignee || !day || !editChore) return;
@@ -74,27 +73,19 @@ function App() {
     };
 
     const choreRef = ref(db, `chores/${editChore.id}`);
-
     await update(choreRef, updatedChore);
+
     const updatedChores = chores.map((chore) =>
       chore.id === editChore.id ? { ...chore, ...updatedChore } : chore,
     );
 
     setChores(updatedChores);
-    setTask('');
-    setAssignee('');
-    setDay('');
-    setShowForm(false);
-    setEditChore(null);
+    resetForm();
   };
 
   const handleEditChore = (chore: Chore) => {
     if (editChore && editChore.id === chore.id) {
-      setEditChore(null);
-      setShowForm(false);
-      setTask('');
-      setAssignee('');
-      setDay('');
+      resetForm();
     } else {
       setEditChore(chore);
       setTask(chore.task);
@@ -130,58 +121,43 @@ function App() {
     setChores(updatedChores);
   };
 
+  const handleDeleteChore = async (choreId: string) => {
+    const confirmable = window.confirm('Are you sure you want to delete this chore?');
+    if (!confirmable) return;
+
+    const choreRef = ref(db, `chores/${choreId}`);
+    await set(choreRef, null);
+
+    setChores((prev) => prev.filter((chore) => chore.id !== choreId));
+  };
+
+  const resetForm = () => {
+    setTask('');
+    setAssignee('');
+    setDay(new Date().toISOString());
+    setEditChore(null);
+    setShowForm(false);
+  };
+
   return (
     <div className="App">
       <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
-        {/* Header */}
         <header className="text-center border-b font-[Atma] pb-2">
-          {/* <div className="flex justify-between items-center mb-2"> */}
           <div className="flex justify-center items-center mb-2">
-            {/* Settings Icon */}
-            {/* <SettingsIcon /> */}
             <h1 className="text-2xl font-semibold">RoomieRounds</h1>
-            {/* Profile Icon */}
-            {/* <ProfileIcon /> */}
           </div>
         </header>
 
-        {/* Chore Form */}
-        {showForm && (
-          <div className="p-4 border rounded-md shadow mb-4">
-            <input
-              type="text"
-              placeholder="Chore"
-              value={task}
-              onChange={(e) => setTask(e.target.value)}
-              className="w-full mb-2 p-2 border rounded"
-            />
-            <input
-              type="text"
-              placeholder="Assignee"
-              value={assignee}
-              onChange={(e) => setAssignee(e.target.value)}
-              className="w-full mb-2 p-2 border rounded"
-            />
-            <input
-              type="text"
-              placeholder="Day"
-              value={day}
-              onChange={(e) => setDay(e.target.value)}
-              className="w-full mb-2 p-2 border rounded"
-            />
-            <button
-              onClick={editChore ? handleUpdateChore : handleAddChore}
-              className="bg-slate-500 text-white font-semibold px-4 py-2 rounded-md mt-2 w-full hover:bg-slate-600 transition"
-            >
-              {editChore ? 'Update Chore' : 'Add Chore'}
-            </button>
-          </div>
-        )}
-
-        {/* Chore List */}
         <main className="flex flex-col gap-4 mt-4 flex-grow">
           {chores
-            .sort((a, b) => Number(a.completed) - Number(b.completed))
+            .sort((a, b) => {
+              if (a.completed !== b.completed) {
+                return Number(a.completed) - Number(b.completed);
+              }
+              const dateA = new Date(a.day).getTime();
+              const dateB = new Date(b.day).getTime();
+              return dateA - dateB;
+            })
             .map((chore, idx) => {
               const cardClass = chore.completed
                 ? 'border-gray-700 bg-gray-300'
@@ -193,7 +169,6 @@ function App() {
                   className={`flex items-center justify-between p-4 rounded-xl border-2 shadow-sm ${cardClass}`}
                 >
                   <div className="flex items-center gap-2 w-full">
-                    {/* Checkbox */}
                     <input
                       type="checkbox"
                       checked={chore.completed}
@@ -202,7 +177,6 @@ function App() {
                         updated[idx].completed = !updated[idx].completed;
                         setChores(updated);
 
-                        // Sync to Firebase
                         const choreId = updated[idx].id;
                         if (choreId) {
                           const choreRef = ref(db, `chores/${choreId}`);
@@ -211,23 +185,28 @@ function App() {
                       }}
                       className="w-5 h-5 accent-black"
                     />
-                    {/* Chore text */}
                     <div className="flex flex-col text-left w-full">
                       <span
                         className={`font-semibold ${chore.completed ? 'line-through text-black/60' : ''}`}
                       >
                         {chore.task}
                       </span>
-                      <span className="italic text-sm text-black/60">{chore.day}</span>
+                      <span className="italic text-sm text-black/60">
+                        {formatDueDate(chore.day)}
+                      </span>
                     </div>
-                    {/* Assignee */}
                     <span className="font-semibold">{chore.assignee}</span>
-                    {/* Edit Button */}
                     <button
                       onClick={() => handleEditChore(chore)}
                       className="bg-transparent w-[32px] h-[32px] p-1 text-black cursor-pointer"
                     >
                       <EditIcon />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteChore(chore.id!)}
+                      className="bg-transparent w-[32px] h-[32px] p-1 text-red-500 cursor-pointer"
+                    >
+                      <DeleteIcon />
                     </button>
                   </div>
                 </div>
@@ -235,26 +214,48 @@ function App() {
             })}
         </main>
 
-        {/* Bottom Navigation */}
         <footer className="flex justify-around items-center mt-4 border-t pt-2">
-          {/* Add */}
-          <button
-            className="bg-slate-500 py-[10px] px-[32px] text-white cursor-pointer"
-            onClick={() => setShowForm(!showForm)}
-          >
-            <AddIcon />
-          </button>
-          {/* Swap */}
+          <div>
+            <button
+              onClick={() => {
+                setTask('');
+                setAssignee('');
+                setDay(new Date().toISOString());
+                setEditChore(null);
+                setShowForm(true);
+              }}
+              className="bg-slate-500 py-[10px] px-[32px] text-white cursor-pointer"
+              type="button"
+            >
+              <AddIcon />
+            </button>
+            {showForm && (
+              <Modal
+                onClose={resetForm}
+                taskHandler={(e) => setTask(e.target.value)}
+                assigneeHandler={(e) => setAssignee(e.target.value)}
+                setDay={setDay}
+                taskValue={task}
+                assigneeValue={assignee}
+                dayValue={day}
+                handleAddChore={(e) => {
+                  e.preventDefault();
+                  handleAddChore();
+                }}
+                handleUpdateChore={(e) => {
+                  e.preventDefault();
+                  handleUpdateChore();
+                }}
+                editChore={editChore}
+              />
+            )}
+          </div>
           <button
             className="bg-slate-500 py-[10px] px-[32px] text-white cursor-pointer"
             onClick={handleSwapChores}
           >
             <SwapIcon />
           </button>
-          {/* Nudge */}
-          {/* <button className="bg-slate-500 py-[10px] px-[32px] text-white">
-            <NudgeIcon />
-          </button> */}
         </footer>
       </div>
     </div>
