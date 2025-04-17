@@ -1,7 +1,22 @@
 // reference used for original HTML-version code example of this component: https://flowbite.com/docs/components/modal/
 // After converting from HTML to JSX manually, prompted chatGPT to double check work: "Is this valid JSX for a React app? [inserted converted code here]"
-
 import React from 'react';
+
+import { Chore } from '../types';
+
+// GitHub Copilot was used to generate the following interface for the Modal component
+interface ModalProps {
+  onClose: () => void;
+  taskHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  assigneeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  dayHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  taskValue: string;
+  assigneeValue: string;
+  dayValue: string;
+  handleAddChore: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleUpdateChore: (e: React.FormEvent<HTMLFormElement>) => void;
+  editChore: Chore | null;
+}
 
 export default function Modal({
   onClose,
@@ -14,7 +29,7 @@ export default function Modal({
   handleAddChore,
   handleUpdateChore,
   editChore,
-}) {
+}: ModalProps) {
   return (
     <div
       role="dialog"
@@ -55,7 +70,10 @@ export default function Modal({
         </div>
 
         {/* -------- Modal body -------- */}
-        <form className="p-5 md:p-5">
+        <form
+          className="p-5 md:p-5"
+          onSubmit={editChore ? handleUpdateChore : handleAddChore}
+        >
           <div className="flex flex-col gap-4 mb-4">
             {/* -------- Task description input -------- */}
             <div className="col-span-2">
@@ -70,7 +88,6 @@ export default function Modal({
                 value={taskValue}
                 className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
                 placeholder="Type task description here"
-                required=""
                 onChange={taskHandler}
               />
             </div>
@@ -88,7 +105,6 @@ export default function Modal({
                 value={assigneeValue}
                 className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
                 placeholder="Type household member name here"
-                required=""
                 onChange={assigneeHandler}
               />
             </div>
@@ -106,7 +122,6 @@ export default function Modal({
                 value={dayValue}
                 className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
                 placeholder="DD/MM/YYYY"
-                required=""
                 onChange={dayHandler}
               ></input>
             </div>
@@ -116,7 +131,6 @@ export default function Modal({
           <button
             type="submit"
             className="inline-flex items-center justify-center bg-slate-500 text-white font-semibold px-4 py-2 rounded-md mt-2 w-full hover:bg-slate-600 transition"
-            onClick={editChore ? handleUpdateChore : handleAddChore}
           >
             <svg
               className="me-1 -ms-1 w-5 h-5"
