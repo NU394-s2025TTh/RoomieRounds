@@ -278,7 +278,7 @@ function App() {
                 setEditChore(null);
                 setShowForm(true);
               }}
-              className="bg-slate-500 py-[10px] px-[32px] text-white"
+              className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
               type="button"
             >
               <AddIcon />
@@ -305,7 +305,7 @@ function App() {
             )}
           </div>
           <button
-            className="bg-slate-500 py-[10px] px-[32px] text-white"
+            className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
             onClick={handleSwapChores}
           >
             <SwapIcon />

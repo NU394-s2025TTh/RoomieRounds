@@ -32,6 +32,11 @@ const FilterModal: React.FC<FilterModalProps> = ({
     onClose();
   };
 
+  const handleReset = () => {
+    setCompletedFilter('all');
+    setAssigneeFilter('all');
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -82,6 +87,13 @@ const FilterModal: React.FC<FilterModalProps> = ({
               className="bg-gray-300 py-2 px-4 text-base font-medium rounded-md hover:bg-gray-400 transition"
             >
               Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="bg-slate-500 text-white py-2 px-4 text-base font-medium rounded-md hover:bg-slate-600 transition"
+            >
+              Reset
             </button>
             <button
               type="submit"
