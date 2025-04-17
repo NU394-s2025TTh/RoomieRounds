@@ -2,10 +2,11 @@ import './App.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import React, { useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
 
+// import DatePicker from 'react-datepicker';
 import {
   AddIcon,
+  DeleteIcon,
   EditIcon,
   // NudgeIcon,
   // ProfileIcon,
@@ -230,7 +231,7 @@ function App() {
                       // this is why we use "!"
                       className="bg-transparent w-[32px] h-[32px] p-1 text-red-500"
                     >
-                      🗑️
+                      <DeleteIcon />
                     </button>
                   </div>
                 </div>
@@ -241,7 +242,7 @@ function App() {
         {/* Bottom Navigation */}
         <footer className="flex justify-around items-center mt-4 border-t pt-2">
           <div>
-            {/* Add Icon connected to Modal */}
+            {/* AddChoreIcon connected to Modal */}
             <button
               onClick={() => setShowForm(true)}
               className="bg-slate-500 py-[10px] px-[32px] text-white"
@@ -252,7 +253,6 @@ function App() {
             {showForm && (
               <Modal
                 onClose={() => setShowForm(false)}
-                modalTitle="Add Chore"
                 taskHandler={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setTask(e.target.value)
                 }

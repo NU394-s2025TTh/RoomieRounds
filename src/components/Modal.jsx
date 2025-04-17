@@ -5,7 +5,6 @@ import React from 'react';
 
 export default function Modal({
   onClose,
-  modalTitle,
   taskHandler,
   assigneeHandler,
   dayHandler,
@@ -26,7 +25,9 @@ export default function Modal({
       <div className="relative rounded-lg bg-slate-100 w-full max-w-2xl max-h-full">
         {/* -------- Modal header -------- */}
         <div className="flex justify-between align-middle p-4 md:p-5 border-b rounded-t border-slate-500">
-          <h3 className="text-center text-2xl font-semibold text-black">{modalTitle}</h3>
+          <h3 className="text-center text-2xl font-semibold text-black">
+            {editChore ? 'Update Chore' : 'Add Chore'}
+          </h3>
 
           {/* -------- Close button -------- */}
           <button
@@ -104,7 +105,7 @@ export default function Modal({
                 type="text"
                 value={dayValue}
                 className="w-full mb-2 p-2 border rounded-lg bg-slate-200 border-slate-500 text-slate-900"
-                placeholder="Type due date here"
+                placeholder="DD/MM/YYYY"
                 required=""
                 onChange={dayHandler}
               ></input>
@@ -129,7 +130,7 @@ export default function Modal({
                 clipRule="evenodd"
               ></path>
             </svg>
-            {modalTitle}
+            {editChore ? 'Update Chore' : 'Add Chore'}
           </button>
         </form>
       </div>
