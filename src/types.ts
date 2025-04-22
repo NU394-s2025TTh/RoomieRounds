@@ -6,3 +6,13 @@ export type Chore = {
   color: string;
   completed: boolean;
 };
+
+export type Household = {
+  id?: string;
+  name: string;
+  chores: Chore[];
+  members: string[];
+  color: string;
+};
+
+export type Status = 'all' | 'completed' | 'incomplete';
