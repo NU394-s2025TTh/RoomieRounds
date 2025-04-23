@@ -110,6 +110,9 @@ function App() {
   };
 
   const handleSwapChores = () => {
+    const confirmable = window.confirm('Are you sure you want to shuffle the chores?');
+    if (!confirmable) return;
+
     const assignees = chores.map((c) => c.assignee);
     const shuffled = [...assignees].sort(() => Math.random() - 0.5);
 
@@ -172,14 +175,36 @@ function App() {
 
   return (
     <div className="App">
-      <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
-        <header className="text-center border-b font-[Atma] pb-2">
-          <div className="flex justify-center items-center mb-2">
+      <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter]">
+        <header className="sticky top-0 z-20 bg-slate-100 border-b font-[Atma]">
+          <div className="flex justify-between items-center px-4 py-2">
+            <button
+              type="button"
+              onClick={handleSwapChores}
+              className="bg-transparent p-1 text-black hover:text-gray-600"
+            >
+              <SwapIcon />
+            </button>
+
             <h1 className="text-2xl font-semibold">RoomieRounds</h1>
+
+            <button
+              type="button"
+              onClick={() => {
+                setTask('');
+                setAssignee('');
+                setDay(new Date().toISOString());
+                setEditChore(null);
+                setShowForm(true);
+              }}
+              className="bg-transparent p-1 text-black hover:text-gray-600"
+            >
+              <AddIcon />
+            </button>
           </div>
         </header>
 
-        <main className="flex flex-col gap-4 mt-4 flex-grow">
+        <main className="flex flex-col gap-4 mt-4 pt-2 px-4 flex-grow">
           <div className="flex justify-end">
             <button
               onClick={() => setShowFilters(true)} // Open the filter modal
@@ -203,6 +228,27 @@ function App() {
               />
             )}
           </div>
+          {/* Showing the Modal Here */}
+          {showForm && (
+            <Modal
+              onClose={resetForm}
+              taskHandler={(e) => setTask(e.target.value)}
+              assigneeHandler={(e) => setAssignee(e.target.value)}
+              setDay={setDay}
+              taskValue={task}
+              assigneeValue={assignee}
+              dayValue={day}
+              handleAddChore={(e) => {
+                e.preventDefault();
+                handleAddChore();
+              }}
+              handleUpdateChore={(e) => {
+                e.preventDefault();
+                handleUpdateChore();
+              }}
+              editChore={editChore}
+            />
+          )}
           {filteredChores
             .sort((a, b) => {
               if (a.completed !== b.completed) {
@@ -268,49 +314,7 @@ function App() {
             })}
         </main>
 
-        <footer className="flex justify-around items-center mt-4 border-t pt-2">
-          <div>
-            <button
-              onClick={() => {
-                setTask('');
-                setAssignee('');
-                setDay(new Date().toISOString());
-                setEditChore(null);
-                setShowForm(true);
-              }}
-              className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
-              type="button"
-            >
-              <AddIcon />
-            </button>
-            {showForm && (
-              <Modal
-                onClose={resetForm}
-                taskHandler={(e) => setTask(e.target.value)}
-                assigneeHandler={(e) => setAssignee(e.target.value)}
-                setDay={setDay}
-                taskValue={task}
-                assigneeValue={assignee}
-                dayValue={day}
-                handleAddChore={(e) => {
-                  e.preventDefault();
-                  handleAddChore();
-                }}
-                handleUpdateChore={(e) => {
-                  e.preventDefault();
-                  handleUpdateChore();
-                }}
-                editChore={editChore}
-              />
-            )}
-          </div>
-          <button
-            className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
-            onClick={handleSwapChores}
-          >
-            <SwapIcon />
-          </button>
-        </footer>
+        <footer className="flex justify-around items-center mt-4 border-t pt-2"></footer>
       </div>
     </div>
   );
