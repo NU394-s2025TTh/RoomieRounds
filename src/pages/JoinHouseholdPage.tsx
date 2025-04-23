@@ -1,6 +1,7 @@
 import { User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 
+import AddModal from '../components/AddModal';
 import JoinModal from '../components/JoinModal';
 import { Household } from '../types';
 
@@ -90,7 +91,7 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
 
         {user && (
           <button
-            onClick={() => setShowAddHouseholdModal(!showAddHouseholdModal)}
+            onClick={() => setShowAddHouseholdModal(true)}
             style={{ border: '2px solid black' }}
             className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm hover:bg-gray-200 text-center font-[Inter] text-xs`}
           >
@@ -98,6 +99,14 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
           </button>
         )}
         {!user && <p> Please sign in to access households to join! </p>}
+
+        {showAddHouseholdModal && (
+          <AddModal
+            onClose={() => {
+              setShowAddHouseholdModal(false);
+            }}
+          />
+        )}
       </main>
     </div>
   );
