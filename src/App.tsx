@@ -110,6 +110,9 @@ function App() {
   };
 
   const handleSwapChores = () => {
+    const confirmable = window.confirm('Are you sure you want to shuffle the chores?');
+    if (!confirmable) return;
+
     const assignees = chores.map((c) => c.assignee);
     const shuffled = [...assignees].sort(() => Math.random() - 0.5);
 
