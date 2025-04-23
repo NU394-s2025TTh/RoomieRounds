@@ -175,12 +175,13 @@ function App() {
 
   return (
     <div className="App">
-      <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
-        <header className="sticky top-0 z-20 bg-slate-100 text-center border-b font-[Atma] pb-2">
+      <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter]">
+        <header className="sticky top-0 z-20 bg-slate-100 border-b font-[Atma]">
           <div className="flex justify-between items-center px-4 py-2">
             <button
+              type="button"
               onClick={handleSwapChores}
-              className="bg-slate-500 py-2 px-4 text-white hover:bg-slate-600 rounded-lg"
+              className="bg-transparent p-1 text-black hover:text-gray-600"
             >
               <SwapIcon />
             </button>
@@ -196,14 +197,14 @@ function App() {
                 setEditChore(null);
                 setShowForm(true);
               }}
-              className="bg-slate-500 py-2 px-4 text-white hover:bg-slate-600 rounded-lg"
+              className="bg-transparent p-1 text-black hover:text-gray-600"
             >
               <AddIcon />
             </button>
           </div>
         </header>
 
-        <main className="flex flex-col gap-4 mt-4 pt-2 flex-grow">
+        <main className="flex flex-col gap-4 mt-4 pt-2 px-4 flex-grow">
           <div className="flex justify-end">
             <button
               onClick={() => setShowFilters(true)} // Open the filter modal
