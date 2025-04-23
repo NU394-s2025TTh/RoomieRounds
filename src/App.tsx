@@ -121,6 +121,9 @@ function App() {
   };
 
   const handleSwapChores = () => {
+    const confirmable = window.confirm('Are you sure you want to shuffle the chores?');
+    if (!confirmable) return;
+
     const assignees = chores.map((c) => c.assignee);
     const shuffled = [...assignees].sort(() => Math.random() - 0.5);
 
@@ -204,87 +207,74 @@ function App() {
 
   return (
     <div className="App">
-      <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
-        <header className="flex justify-between items-center border-b font-[Atma] pb-2">
-          {/* Swap chores on the left */}
-          <button
-            className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
-            onClick={handleSwapChores}
-          >
-            <SwapIcon />
-          </button>
-
-          {/* Title in the center */}
-          <h1 className="text-2xl font-semibold mx-auto">RoomieRounds</h1>
-
-          {/* Add chore on the right */}
-          <div>
+      <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter]">
+        <header className="sticky top-0 z-20 bg-slate-100 border-b font-[Atma]">
+          <div className="flex justify-between items-center px-4 py-2">
+            {/* Swap Chores */}
             <button
-              onClick={() => {
-                setTask('');
-                setAssignee('');
-                setDay(new Date().toISOString());
-                setEditChore(null);
-                setShowForm(true);
-              }}
-              className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
               type="button"
+              onClick={handleSwapChores}
+              className="bg-transparent justify-left p-1 text-black hover:text-gray-600"
             >
-              <AddIcon />
+              <SwapIcon />
             </button>
-            {showForm && (
-              <Modal
-                onClose={resetForm}
-                taskHandler={(e) => setTask(e.target.value)}
-                assigneeHandler={(e) => setAssignee(e.target.value)}
-                setDay={setDay}
-                taskValue={task}
-                assigneeValue={assignee}
-                dayValue={day}
-                handleAddChore={(e) => {
-                  e.preventDefault();
-                  handleAddChore();
-                }}
-                handleUpdateChore={(e) => {
-                  e.preventDefault();
-                  handleUpdateChore();
-                }}
-                editChore={editChore}
-              />
-            )}
-          </div>
+            {/* End of swap chores */}
 
-          {/* Profile Icon temporarily here until add household pages */}
-          <div className="relative">
-            <button
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
-              type="button"
-              className="focus:outline-none"
-            >
-              <ProfileIcon />
-            </button>
-            {showProfileMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50 font-[Inter]">
-                <div className="py-2">
-                  <button
-                    onClick={user ? handleSignOut : handleGoogleSignIn}
-                    className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 w-full text-left"
-                    style={{ fontSize: '16px' }}
-                  >
-                    {user ? 'Sign Out' : 'Sign In with Google'}
-                  </button>
-                </div>
-                {user && (
-                  <div className="px-4 py-2 text-sm text-gray-700">
-                    Signed in as: {user.displayName}
+            <h1 className="text-2xl font-semibold">RoomieRounds</h1>
+
+            {/* Grouping add and profile icons together for CSS justification */}
+            <div className="flex items-center justify-center gap-2 relative">
+              {/* Add Chores */}
+              <button
+                type="button"
+                onClick={() => {
+                  setTask('');
+                  setAssignee('');
+                  setDay(new Date().toISOString());
+                  setEditChore(null);
+                  setShowForm(true);
+                }}
+                className="bg-transparent text-black hover:text-gray-600 w-5 h-5"
+              >
+                <AddIcon />
+              </button>
+              {/* End of Add Chores */}
+
+              {/* Profile Icon temporarily here until add household pages */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  type="button"
+                  className="focus:outline-none pl-2 w-8 h-4"
+                >
+                  <ProfileIcon />
+                </button>
+                {showProfileMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50 font-[Inter]">
+                    <div className="py-2">
+                      <button
+                        onClick={user ? handleSignOut : handleGoogleSignIn}
+                        className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 w-full text-left"
+                        style={{ fontSize: '16px' }}
+                      >
+                        {user ? 'Sign Out' : 'Sign In with Google'}
+                      </button>
+                    </div>
+                    {user && (
+                      <div className="px-4 py-2 text-sm text-gray-700">
+                        Signed in as: {user.displayName}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-            )}
+              {/* End of Profile Icon */}
+            </div>
+            {/* End of the add icon + profile icon group */}
           </div>
         </header>
 
-        <main className="flex flex-col gap-4 mt-4 flex-grow">
+        <main className="flex flex-col gap-4 mt-4 pt-2 px-4 flex-grow">
           <div className="flex justify-end">
             <button
               onClick={() => setShowFilters(true)} // Open the filter modal
@@ -308,6 +298,27 @@ function App() {
               />
             )}
           </div>
+          {/* Showing the Modal Here */}
+          {showForm && (
+            <Modal
+              onClose={resetForm}
+              taskHandler={(e) => setTask(e.target.value)}
+              assigneeHandler={(e) => setAssignee(e.target.value)}
+              setDay={setDay}
+              taskValue={task}
+              assigneeValue={assignee}
+              dayValue={day}
+              handleAddChore={(e) => {
+                e.preventDefault();
+                handleAddChore();
+              }}
+              handleUpdateChore={(e) => {
+                e.preventDefault();
+                handleUpdateChore();
+              }}
+              editChore={editChore}
+            />
+          )}
           {filteredChores
             .sort((a, b) => {
               if (a.completed !== b.completed) {
@@ -374,9 +385,7 @@ function App() {
             })}
         </main>
 
-        <footer className="flex justify-around items-center mt-4 border-t pt-2">
-          {/* footer temporarily empty as household pages are a work in progress */}
-        </footer>
+        <footer className="flex justify-around items-center mt-4 border-t pt-2"></footer>
       </div>
     </div>
   );
