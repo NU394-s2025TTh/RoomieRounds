@@ -1,17 +1,12 @@
 import { User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 
+import JoinModal from '../components/JoinModal';
 import { Household } from '../types';
-// import { useNavigate } from 'react-router-dom';
-// import { db, onValue, push, ref, set, update } from '../firebase';
 
 // TODO:
-// this component might need to take in the user state from App.tsx to make firebase integration work
-// need join household modal that integrates with firebase
-// after joining household, navigate to chores page
-// uncomment line 22 below too to use navigate for this
-
-// need add household modal form that integrates with firebase
+// need to integrate join household modal form
+// need to integrate add household modal form
 
 interface JoinHouseholdsPageProps {
   user: User | null;
@@ -19,14 +14,13 @@ interface JoinHouseholdsPageProps {
 
 function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
   const [households, setHouseholds] = useState<Household[]>([]);
-  const [showAddHouseholdModal, setShowAddHouseholdModal] = useState(false);
   const [showJoinHouseholdModal, setShowJoinHouseholdModal] = useState(false);
-
-  // !!!!!!!!!!!UNCOMMENT THIS WHEN YOU IMPLEMENT JOIN HOUSEHOLD MODAL
-  // const navigate = useNavigate();
+  const [showAddHouseholdModal, setShowAddHouseholdModal] = useState(false);
+  const [selectedHousehold, setSelectedHousehold] = useState<Household | null>();
 
   useEffect(() => {
     console.log(user);
+    // TODO: firebase integration here!
     // const housesRef = ref(db, 'chores');
     // onValue(housesRef, (snapshot) => {
     //   const data = snapshot.val();
@@ -41,7 +35,7 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
     //   }
     // });
 
-    // Test data
+    // Test data -- DELETE THIS AFTER FIREBASE INTEGRATION
     setHouseholds([
       {
         id: '1',
@@ -60,22 +54,40 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
     ]);
   }, []);
 
+  const handleShowModal = (household: Household) => {
+    setSelectedHousehold(household);
+    setShowJoinHouseholdModal(true);
+  };
+
   return (
     <div className="flex flex-col justify-between flex-grow">
       <main className="flex flex-col gap-4 mt-4 flex-grow">
         {user &&
           households.map((household, idx) => {
+            console.log(household.name);
             return (
-              <button
-                key={idx}
-                onClick={() => setShowJoinHouseholdModal(!showJoinHouseholdModal)}
-                style={{ border: '2px solid black' }}
-                className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm ${household.color} hover:bg-gray-200 text-center font-[Inter] text-xs`}
-              >
-                <span>{household.name}</span>
-              </button>
+              <div key={idx}>
+                <button
+                  onClick={() => handleShowModal(household)}
+                  style={{ border: '2px solid black' }}
+                  className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm ${household.color} hover:bg-gray-200 text-center font-[Inter] text-xs`}
+                >
+                  <span>{household.name}</span>
+                </button>
+                {showJoinHouseholdModal && (
+                  <JoinModal
+                    onClose={() => {
+                      setShowJoinHouseholdModal(false);
+                      setSelectedHousehold(null);
+                    }}
+                    user={user}
+                    household_name={selectedHousehold?.name || ''}
+                  />
+                )}
+              </div>
             );
           })}
+
         {user && (
           <button
             onClick={() => setShowAddHouseholdModal(!showAddHouseholdModal)}

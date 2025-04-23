@@ -41,6 +41,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     console.log(household);
     // eslint-disable-next-line no-unused-vars
     console.log(user);
+    // TODO: FIREBASE INTEGRATION HERE
     const choresRef = ref(db, 'chores');
     onValue(choresRef, (snapshot) => {
       const data = snapshot.val();
