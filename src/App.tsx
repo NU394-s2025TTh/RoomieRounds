@@ -1,6 +1,13 @@
 import './App.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  User,
+} from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 
 import { Status } from '../types/status';
@@ -11,7 +18,7 @@ import {
   EditIcon,
   FilterIcon,
   // NudgeIcon,
-  // ProfileIcon,
+  ProfileIcon,
   // SettingsIcon,
   SwapIcon,
 } from './components/Icons';
@@ -34,6 +41,10 @@ function App() {
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [completedFilter, setCompletedFilter] = useState<Status>('all');
   const [assigneeFilter, setAssigneeFilter] = useState<string>('all');
+
+  // User state
+  const [user, setUser] = useState<User | null>(null);
+  const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
 
   useEffect(() => {
     const choresRef = ref(db, 'chores');
@@ -173,34 +184,93 @@ function App() {
     setShowFilters(false);
   };
 
+  const handleGoogleSignIn = async () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      setUser(result.user); // Save the signed-in user
+    } catch (error) {
+      console.error('Error signing in:', error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      setUser(null); // Clear the user state
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
     <div className="App">
       <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter]">
         <header className="sticky top-0 z-20 bg-slate-100 border-b font-[Atma]">
           <div className="flex justify-between items-center px-4 py-2">
+            {/* Swap Chores */}
             <button
               type="button"
               onClick={handleSwapChores}
-              className="bg-transparent p-1 text-black hover:text-gray-600"
+              className="bg-transparent justify-left p-1 text-black hover:text-gray-600"
             >
               <SwapIcon />
             </button>
+            {/* End of swap chores */}
 
             <h1 className="text-2xl font-semibold">RoomieRounds</h1>
 
-            <button
-              type="button"
-              onClick={() => {
-                setTask('');
-                setAssignee('');
-                setDay(new Date().toISOString());
-                setEditChore(null);
-                setShowForm(true);
-              }}
-              className="bg-transparent p-1 text-black hover:text-gray-600"
-            >
-              <AddIcon />
-            </button>
+            {/* Grouping add and profile icons together for CSS justification */}
+            <div className="flex items-center justify-center gap-2 relative">
+              {/* Add Chores */}
+              <button
+                type="button"
+                onClick={() => {
+                  setTask('');
+                  setAssignee('');
+                  setDay(new Date().toISOString());
+                  setEditChore(null);
+                  setShowForm(true);
+                }}
+                className="bg-transparent text-black hover:text-gray-600 w-5 h-5"
+              >
+                <AddIcon />
+              </button>
+              {/* End of Add Chores */}
+
+              {/* Profile Icon temporarily here until add household pages */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  type="button"
+                  className="focus:outline-none pl-2 w-8 h-4"
+                >
+                  <ProfileIcon />
+                </button>
+                {showProfileMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50 font-[Inter]">
+                    <div className="py-2">
+                      <button
+                        onClick={user ? handleSignOut : handleGoogleSignIn}
+                        className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 w-full text-left"
+                        style={{ fontSize: '16px' }}
+                      >
+                        {user ? 'Sign Out' : 'Sign In with Google'}
+                      </button>
+                    </div>
+                    {user && (
+                      <div className="px-4 py-2 text-sm text-gray-700">
+                        Signed in as: {user.displayName}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              {/* End of Profile Icon */}
+            </div>
+            {/* End of the add icon + profile icon group */}
           </div>
         </header>
 
@@ -273,14 +343,15 @@ function App() {
                       type="checkbox"
                       checked={chore.completed}
                       onChange={() => {
-                        const updated = [...chores];
-                        updated[idx].completed = !updated[idx].completed;
-                        setChores(updated);
+                        const updatedChores = chores.map((c) =>
+                          c.id === chore.id ? { ...c, completed: !c.completed } : c,
+                        );
+                        setChores(updatedChores);
 
-                        const choreId = updated[idx].id;
-                        if (choreId) {
-                          const choreRef = ref(db, `chores/${choreId}`);
-                          update(choreRef, { completed: updated[idx].completed });
+                        // Sync to Firebase
+                        if (chore.id) {
+                          const choreRef = ref(db, `chores/${chore.id}`);
+                          update(choreRef, { completed: !chore.completed });
                         }
                       }}
                       className="w-5 h-5 accent-black"
