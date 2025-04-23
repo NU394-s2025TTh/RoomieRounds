@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import { ProfileIcon } from './components/Icons';
-import JoinHouseholdPage from './pages/JoinHouseHoldPage';
+import JoinHouseholdPage from './pages/JoinHouseholdPage';
 import ViewChoresPage from './pages/ViewChoresPage';
 import ViewHouseholdsPage from './pages/ViewHouseholdsPage';
 
