@@ -206,10 +206,55 @@ function App() {
     <div className="App">
       <div className="min-h-screen flex flex-col justify-between bg-slate-100 text-black font-[Inter] p-4">
         <header className="flex justify-between items-center border-b font-[Atma] pb-2">
+          {/* Swap chores on the left */}
+          <button
+            className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
+            onClick={handleSwapChores}
+          >
+            <SwapIcon />
+          </button>
+
           {/* Title in the center */}
           <h1 className="text-2xl font-semibold mx-auto">RoomieRounds</h1>
 
-          {/* Profile Icon on the right */}
+          {/* Add chore on the right */}
+          <div>
+            <button
+              onClick={() => {
+                setTask('');
+                setAssignee('');
+                setDay(new Date().toISOString());
+                setEditChore(null);
+                setShowForm(true);
+              }}
+              className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
+              type="button"
+            >
+              <AddIcon />
+            </button>
+            {showForm && (
+              <Modal
+                onClose={resetForm}
+                taskHandler={(e) => setTask(e.target.value)}
+                assigneeHandler={(e) => setAssignee(e.target.value)}
+                setDay={setDay}
+                taskValue={task}
+                assigneeValue={assignee}
+                dayValue={day}
+                handleAddChore={(e) => {
+                  e.preventDefault();
+                  handleAddChore();
+                }}
+                handleUpdateChore={(e) => {
+                  e.preventDefault();
+                  handleUpdateChore();
+                }}
+                editChore={editChore}
+              />
+            )}
+          </div>
+
+          {/* Profile Icon temporarily here until add household pages */}
           <div className="relative">
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -227,20 +272,6 @@ function App() {
                     style={{ fontSize: '16px' }}
                   >
                     {user ? 'Sign Out' : 'Sign In with Google'}
-                  </button>
-                  <button
-                    // onClick={/** go to groups page */}
-                    className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 w-full text-left"
-                    style={{ fontSize: '16px' }}
-                  >
-                    My Households
-                  </button>
-                  <button
-                    // onClick={/** go to groups page */}
-                    className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 w-full text-left"
-                    style={{ fontSize: '16px' }}
-                  >
-                    Add a Household
                   </button>
                 </div>
                 {user && (
@@ -344,47 +375,7 @@ function App() {
         </main>
 
         <footer className="flex justify-around items-center mt-4 border-t pt-2">
-          <div>
-            <button
-              onClick={() => {
-                setTask('');
-                setAssignee('');
-                setDay(new Date().toISOString());
-                setEditChore(null);
-                setShowForm(true);
-              }}
-              className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
-              type="button"
-            >
-              <AddIcon />
-            </button>
-            {showForm && (
-              <Modal
-                onClose={resetForm}
-                taskHandler={(e) => setTask(e.target.value)}
-                assigneeHandler={(e) => setAssignee(e.target.value)}
-                setDay={setDay}
-                taskValue={task}
-                assigneeValue={assignee}
-                dayValue={day}
-                handleAddChore={(e) => {
-                  e.preventDefault();
-                  handleAddChore();
-                }}
-                handleUpdateChore={(e) => {
-                  e.preventDefault();
-                  handleUpdateChore();
-                }}
-                editChore={editChore}
-              />
-            )}
-          </div>
-          <button
-            className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
-            onClick={handleSwapChores}
-          >
-            <SwapIcon />
-          </button>
+          {/* footer temporarily empty as household pages are a work in progress */}
         </footer>
       </div>
     </div>
