@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Status } from '../../types/status';
+import { Status } from '../types';
 
 interface FilterModalProps {
   onClose: () => void;
