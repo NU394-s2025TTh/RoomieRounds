@@ -40,14 +40,14 @@ function ViewHouseholdsPage({ user }: ViewHouseholdsPageProps) {
         name: 'Household 1',
         chores: [],
         members: ['member1', 'member2'],
-        color: 'bg-blue-500',
+        color: 'bg-blue-200',
       },
       {
         id: '2',
         name: 'Household 2',
         chores: [],
         members: ['member3', 'member4'],
-        color: 'bg-green-500',
+        color: 'bg-green-200',
       },
     ]);
   }, []);

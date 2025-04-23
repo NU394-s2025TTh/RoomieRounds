@@ -70,7 +70,7 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
                 key={idx}
                 onClick={() => setShowJoinHouseholdModal(!showJoinHouseholdModal)}
                 style={{ border: '2px solid black' }}
-                className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm ${household.color} hover:bg-gray-200 text-center text-xs`}
+                className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm ${household.color} hover:bg-gray-200 text-center font-[Inter] text-xs`}
               >
                 <span>{household.name}</span>
               </button>
@@ -80,7 +80,7 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
           <button
             onClick={() => setShowAddHouseholdModal(!showAddHouseholdModal)}
             style={{ border: '2px solid black' }}
-            className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm hover:bg-gray-200 text-center text-xs`}
+            className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm hover:bg-gray-200 text-center font-[Inter] text-xs`}
           >
             <span>+</span>
           </button>
