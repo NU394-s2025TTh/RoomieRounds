@@ -99,10 +99,13 @@ function App() {
           </div>
         </header>
         <Routes>
-          <Route path="/" element={<ViewHouseholdsPage />} />
-          <Route path="/households" element={<ViewHouseholdsPage />} />
-          <Route path="/join-household" element={<JoinHouseholdPage />} />
-          <Route path="/view-chores/:household" element={<ViewChoresPage />} />
+          <Route path="/" element={<ViewHouseholdsPage user={user} />} />
+          <Route path="/households" element={<ViewHouseholdsPage user={user} />} />
+          <Route path="/join-household" element={<JoinHouseholdPage user={user} />} />
+          <Route
+            path="/view-chores/:household"
+            element={<ViewChoresPage user={user} />}
+          />
         </Routes>
       </div>
     </div>

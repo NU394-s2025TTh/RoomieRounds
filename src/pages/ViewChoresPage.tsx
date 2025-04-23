@@ -1,3 +1,4 @@
+import { User } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -11,10 +12,14 @@ import { getColorForAssignee } from '../utils/getColorForAssignee';
 import { formatDueDate } from '../utils/getHumanReadableDay';
 
 // TODO:
-// this component might need to take in the user state from App.tsx to make firebase integration work
 // Fetch proper chores from Firebase for the current household
 // only display the chores if the user is logged in and a member of the household
-function ViewChores() {
+
+interface ViewChoresPageProps {
+  user: User | null;
+}
+
+function ViewChoresPage({ user }: ViewChoresPageProps) {
   // State for chores
   const [chores, setChores] = useState<Chore[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -34,6 +39,8 @@ function ViewChores() {
 
   useEffect(() => {
     console.log(household);
+    // eslint-disable-next-line no-unused-vars
+    console.log(user);
     const choresRef = ref(db, 'chores');
     onValue(choresRef, (snapshot) => {
       const data = snapshot.val();
@@ -307,4 +314,4 @@ function ViewChores() {
   );
 }
 
-export default ViewChores;
+export default ViewChoresPage;
