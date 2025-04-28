@@ -6,3 +6,9 @@ export type Chore = {
   color: string;
   completed: boolean;
 };
+
+export interface FormState {
+  task: string;
+  assignee: string;
+  day: string;
+}

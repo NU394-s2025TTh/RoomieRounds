@@ -1,1 +1,1 @@
-export type Status = 'all' | 'completed' | 'incomplete';
+export type Status = 'all' | 'completed' | 'pending';
