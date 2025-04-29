@@ -33,9 +33,14 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
     });
   }, []);
 
-  const handleShowModal = (household: Household) => {
+  const handleShowJoinModal = (household: Household) => {
     setSelectedHousehold(household);
     setShowJoinHouseholdModal(true);
+  };
+
+  const handleCloseJoinModal = () => {
+    setShowJoinHouseholdModal(false);
+    setSelectedHousehold(null);
   };
 
   return (
@@ -46,27 +51,27 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
             console.log(household.name);
             return (
               <div key={idx}>
+                {/* Opening and Closing of Join Household Modals */}
                 <button
-                  onClick={() => handleShowModal(household)}
+                  onClick={() => handleShowJoinModal(household)}
                   style={{ border: '2px solid black' }}
-                  className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm ${household.color} hover:bg-gray-200 text-center font-[Inter] text-xs`}
+                  className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm hover:bg-gray-200 text-center font-[Inter] text-xs`}
                 >
                   <span>{household.name}</span>
                 </button>
+
                 {showJoinHouseholdModal && (
                   <JoinModal
-                    onClose={() => {
-                      setShowJoinHouseholdModal(false);
-                      setSelectedHousehold(null);
-                    }}
+                    onClose={handleCloseJoinModal}
                     user={user}
-                    household_name={selectedHousehold?.name || ''}
+                    household_id={selectedHousehold?.id || ''}
                   />
                 )}
               </div>
             );
           })}
 
+        {/* Opening and Closing of Add Household Modal */}
         {user && (
           <button
             onClick={() => setShowAddHouseholdModal(true)}
