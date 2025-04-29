@@ -2,7 +2,6 @@ import { User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Unsued firebase imports (for now): push, set, update
 import { db, onValue, ref } from '../firebase';
 import { Household } from '../types';
 

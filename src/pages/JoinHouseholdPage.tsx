@@ -3,11 +3,8 @@ import { useEffect, useState } from 'react';
 
 import AddModal from '../components/AddModal';
 import JoinModal from '../components/JoinModal';
+import { db, onValue, ref } from '../firebase';
 import { Household } from '../types';
-
-// TODO:
-// need to integrate join household modal form
-// need to integrate add household modal form
 
 interface JoinHouseholdsPageProps {
   user: User | null;
@@ -21,39 +18,20 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
 
   useEffect(() => {
     console.log(user);
-    // TODO: firebase integration here!
-    // const housesRef = ref(db, 'chores');
-    // onValue(housesRef, (snapshot) => {
-    //   const data = snapshot.val();
-    //   if (data) {
-    //     const loadedHouses = Object.entries(data as Record<string, Household>).map(
-    //       ([id, value]) => ({
-    //         id,
-    //         ...value,
-    //       }),
-    //     );
-    //     setHouseholds(loadedHouses);
-    //   }
-    // });
-
-    // Test data -- DELETE THIS AFTER FIREBASE INTEGRATION
-    setHouseholds([
-      {
-        id: '1',
-        name: 'Household 1',
-        chores: [],
-        members: ['member1', 'member2'],
-        color: 'bg-blue-500',
-      },
-      {
-        id: '2',
-        name: 'Household 2',
-        chores: [],
-        members: ['member3', 'member4'],
-        color: 'bg-green-500',
-      },
-    ]);
-  }, []);
+    const housesRef = ref(db, 'households');
+    onValue(housesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const loadedHouses = Object.entries(data as Record<string, Household>).map(
+          ([id, value]) => ({
+            id,
+            ...value,
+          }),
+        );
+        setHouseholds(loadedHouses);
+      }
+    });
+  });
 
   const handleShowModal = (household: Household) => {
     setSelectedHousehold(household);
@@ -105,6 +83,7 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
             onClose={() => {
               setShowAddHouseholdModal(false);
             }}
+            user={user}
           />
         )}
       </main>
