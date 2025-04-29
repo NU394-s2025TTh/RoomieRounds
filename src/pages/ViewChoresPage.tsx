@@ -37,6 +37,20 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
   // Household query parameter from the URL
   const { household } = useParams<{ household: string }>();
 
+  const [householdName, setHouseholdName] = useState<string>('');
+
+  useEffect(() => {
+    if (household) {
+      const householdRef = ref(db, `households/${household}`);
+      onValue(householdRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          setHouseholdName(data.name);
+        }
+      });
+    }
+  }, [household]);
+
   useEffect(() => {
     console.log(household);
 
@@ -178,30 +192,28 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
 
   return (
     <div className="flex flex-col justify-between flex-grow">
+      <header className="flex items-center justify-between p-4">
+        <h1 className="text-2xl font-bold">{householdName}</h1>
+        <button onClick={() => setShowFilters(true)} type="button">
+          <FilterIcon />
+        </button>
+        {showFilters && (
+          <FilterModal
+            onClose={() => setShowFilters(false)}
+            onApplyFilters={(status, assignee) => {
+              setCompletedFilter(status);
+              setAssigneeFilter(assignee);
+              handleApplyFilters(status, assignee);
+            }}
+            currentCompletedFilter={completedFilter}
+            currentAssigneeFilter={assigneeFilter}
+            assignees={chores
+              .map((chore) => chore.assignee)
+              .filter((value, index, self) => self.indexOf(value) === index)}
+          />
+        )}
+      </header>
       <main className="flex flex-col gap-4 mt-4 flex-grow">
-        <div className="flex justify-end">
-          <button
-            onClick={() => setShowFilters(true)} // Open the filter modal
-            type="button"
-          >
-            <FilterIcon />
-          </button>
-          {showFilters && (
-            <FilterModal
-              onClose={() => setShowFilters(false)} // Close the modal
-              onApplyFilters={(status, assignee) => {
-                setCompletedFilter(status);
-                setAssigneeFilter(assignee);
-                handleApplyFilters(status, assignee);
-              }}
-              currentCompletedFilter={completedFilter}
-              currentAssigneeFilter={assigneeFilter}
-              assignees={chores
-                .map((chore) => chore.assignee)
-                .filter((value, index, self) => self.indexOf(value) === index)}
-            />
-          )}
-        </div>
         {filteredChores
           .sort((a, b) => {
             if (a.completed !== b.completed) {

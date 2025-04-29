@@ -50,8 +50,18 @@ function App() {
           handleSignOut={handleSignOut}
         />
         <Routes>
-          <Route path="/" element={<ViewHouseholdsPage user={user} />} />
-          <Route path="/households" element={<ViewHouseholdsPage user={user} />} />
+          <Route
+            path="/"
+            element={
+              <ViewHouseholdsPage user={user} handleGoogleSignIn={handleGoogleSignIn} />
+            }
+          />
+          <Route
+            path="/households"
+            element={
+              <ViewHouseholdsPage user={user} handleGoogleSignIn={handleGoogleSignIn} />
+            }
+          />
           <Route path="/join-household" element={<JoinHouseholdPage user={user} />} />
           <Route
             path="/view-chores/:household"

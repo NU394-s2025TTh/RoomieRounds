@@ -18,24 +18,26 @@ function Header({ user, handleGoogleSignIn, handleSignOut }: HeaderProps) {
       {/* Title in the center */}
       <h1 className="text-2xl font-semibold mx-auto">RoomieRounds</h1>
 
-      {/* Profile Icon on the right */}
-      <div className="relative">
-        <button
-          onClick={() => setShowProfileMenu(!showProfileMenu)}
-          type="button"
-          className="focus:outline-none"
-        >
-          <ProfileIcon />
-        </button>
-        {showProfileMenu && (
-          <ProfileMenu
-            user={user}
-            handleGoogleSignIn={handleGoogleSignIn}
-            handleSignOut={handleSignOut}
-            onClose={() => setShowProfileMenu(false)}
-          />
-        )}
-      </div>
+      {/* Profile Icon on the right (only visible when signed in) */}
+      {user && (
+        <div className="relative">
+          <button
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            type="button"
+            className="focus:outline-none"
+          >
+            <ProfileIcon />
+          </button>
+          {showProfileMenu && (
+            <ProfileMenu
+              user={user}
+              handleGoogleSignIn={handleGoogleSignIn}
+              handleSignOut={handleSignOut}
+              onClose={() => setShowProfileMenu(false)}
+            />
+          )}
+        </div>
+      )}
     </header>
   );
 }
