@@ -1,17 +1,41 @@
+// Backend integration written with help of GitHub CoPilot
+import { User } from 'firebase/auth';
 import React, { useState } from 'react';
 
-// TODO: Firebase integration
+import { db, push, ref, set } from '../firebase';
+import { Household } from '../types';
+
 interface AddModalProps {
   onClose: () => void;
+  user: User | null;
 }
 
-const AddModal: React.FC<AddModalProps> = ({ onClose }) => {
+const AddModal: React.FC<AddModalProps> = ({ onClose, user }) => {
   const [householdName, setHouseholdName] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user) {
+      console.error('User is null. Cannot add to household members.');
+      return;
+    }
+
+    const newMember = {
+      uid: user.uid,
+      email: user.email || '',
+      displayName: user.displayName || '',
+      photoURL: user.photoURL || '',
+    };
+
     if (householdName.trim()) {
-      // TODO: Firebase integration required here to create a new household in the database
+      const newHousehold: Omit<Household, 'id'> = {
+        name: householdName,
+        members: [newMember],
+        chores: [],
+      };
+      const newHouseholdRef = push(ref(db, 'households'));
+      await set(newHouseholdRef, newHousehold);
 
       onClose();
     }
