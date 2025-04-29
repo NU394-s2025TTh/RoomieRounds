@@ -39,10 +39,10 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
 
   useEffect(() => {
     console.log(household);
-    // eslint-disable-next-line no-unused-vars
+
     console.log(user);
-    // TODO: FIREBASE INTEGRATION HERE
-    const choresRef = ref(db, 'chores');
+
+    const choresRef = ref(db, `households/${household}/chores`);
     onValue(choresRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -74,7 +74,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
       completed: false,
     };
 
-    const choreRef = push(ref(db, 'chores'));
+    const choreRef = push(ref(db, `households/${household}/chores`));
     await set(choreRef, newChore);
 
     resetForm();
@@ -92,7 +92,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
       completed: editChore.completed,
     };
 
-    const choreRef = ref(db, `chores/${editChore.id}`);
+    const choreRef = ref(db, `households/${household}/chores${editChore.id}`);
     await update(choreRef, updatedChore);
 
     const updatedChores = chores.map((chore) =>
@@ -118,7 +118,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
 
     updatedChores.forEach((chore) => {
       if (chore.id) {
-        const choreRef = ref(db, `chores/${chore.id}`);
+        const choreRef = ref(db, `households/${household}/chores/${chore.id}`);
         update(choreRef, {
           assignee: chore.assignee,
           color: chore.color,
@@ -145,7 +145,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     const confirmable = window.confirm('Are you sure you want to delete this chore?');
     if (!confirmable) return;
 
-    const choreRef = ref(db, `chores/${choreId}`);
+    const choreRef = ref(db, `households/${household}/chores/${choreId}`);
     await set(choreRef, null);
 
     setChores((prev) => prev.filter((chore) => chore.id !== choreId));
@@ -233,7 +233,10 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
 
                       // Sync to Firebase
                       if (chore.id) {
-                        const choreRef = ref(db, `chores/${chore.id}`);
+                        const choreRef = ref(
+                          db,
+                          `households/${household}/chores/${chore.id}`,
+                        );
                         update(choreRef, { completed: !chore.completed });
                       }
                     }}
