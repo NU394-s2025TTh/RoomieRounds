@@ -39,9 +39,9 @@ function ViewHouseholdsPage({ user }: ViewHouseholdsPageProps) {
             return (
               <button
                 key={idx}
-                onClick={() => navigate(`/view-chores/${household.name}`)}
+                onClick={() => navigate(`/view-chores/${household.id}`)}
                 style={{ border: '2px solid black' }}
-                className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm ${household.color} hover:bg-gray-200 text-center text-xs`}
+                className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm hover:bg-gray-200 text-center text-xs`}
               >
                 <span>{household.name}</span>
               </button>
