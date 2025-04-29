@@ -56,7 +56,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
         setFilteredChores(loadedChores);
       }
     });
-  }, []);
+  }, [household, user]);
 
   useEffect(() => {
     handleApplyFilters(completedFilter, assigneeFilter);

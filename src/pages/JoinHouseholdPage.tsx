@@ -31,7 +31,7 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
         setHouseholds(loadedHouses);
       }
     });
-  });
+  }, []);
 
   const handleShowModal = (household: Household) => {
     setSelectedHousehold(household);

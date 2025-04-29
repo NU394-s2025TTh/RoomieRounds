@@ -29,7 +29,7 @@ function ViewHouseholdsPage({ user }: ViewHouseholdsPageProps) {
         setHouseholds(loadedHouses);
       }
     });
-  });
+  }, []);
 
   return (
     <div className="flex flex-col justify-between flex-grow">
