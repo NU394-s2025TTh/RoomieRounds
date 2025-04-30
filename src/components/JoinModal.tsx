@@ -45,12 +45,12 @@ const JoinModal: React.FC<FilterModalProps> = ({
         photoURL: user.photoURL || '',
       };
 
-      // Go to chores page if the user already exists in the current members
       if (
         Array.isArray(currentMembers) &&
         currentMembers.some((member) => member.uid === user.uid)
       ) {
         navigate(`/view-chores/${household_id}`);
+        return;
       }
 
       let updatedMembers = [];
