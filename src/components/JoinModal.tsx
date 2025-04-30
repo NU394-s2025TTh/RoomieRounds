@@ -11,9 +11,15 @@ interface FilterModalProps {
   onClose: () => void;
   user: User | null;
   household_id: string;
+  household_name: string;
 }
 
-const JoinModal: React.FC<FilterModalProps> = ({ onClose, user, household_id }) => {
+const JoinModal: React.FC<FilterModalProps> = ({
+  onClose,
+  user,
+  household_id,
+  household_name,
+}) => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,7 +74,7 @@ const JoinModal: React.FC<FilterModalProps> = ({ onClose, user, household_id }) 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-semibold mb-4">{`Join ${household_id}?`}</h2>
+        <h2 className="text-2xl font-semibold mb-4">{`Join ${household_name}?`}</h2>
         {/* Modal Actions */}
         <div className="flex justify-end gap-4">
           <button

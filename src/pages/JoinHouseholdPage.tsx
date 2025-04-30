@@ -65,6 +65,7 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
                     onClose={handleCloseJoinModal}
                     user={user}
                     household_id={selectedHousehold?.id || ''}
+                    household_name={selectedHousehold?.name || ''}
                   />
                 )}
               </div>
