@@ -141,7 +141,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
 
     distributedChores.forEach((chore) => {
       if (chore.id) {
-        const choreRef = ref(db, `chores/${chore.id}`);
+        const choreRef = ref(db, `households/${household}/chores/${chore.id}`);
         update(choreRef, {
           assignee: chore.assignee,
           color: chore.color,
