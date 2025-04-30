@@ -118,6 +118,9 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
   };
 
   const handleSwapChores = () => {
+    const confirmable = window.confirm('Are you sure you want to shuffle the chores?');
+    if (!confirmable) return;
+
     const assignees = chores.map((c) => c.assignee);
     const shuffled = [...assignees].sort(() => Math.random() - 0.5);
 
@@ -193,7 +196,20 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
   return (
     <div className="flex flex-col justify-between flex-grow">
       <header className="flex items-center justify-between p-4">
+        {/* Household Name */}
         <h1 className="text-2xl font-bold">{householdName}</h1>
+
+        {/* Swap Chores */}
+        <button
+          type="button"
+          onClick={handleSwapChores}
+          className="bg-transparent justify-left p-1 text-black hover:text-gray-600"
+        >
+          <SwapIcon />
+        </button>
+        {/* End of swap chores */}
+
+        {/* Filter Icon */}
         <button onClick={() => setShowFilters(true)} type="button">
           <FilterIcon />
         </button>
@@ -212,8 +228,47 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
               .filter((value, index, self) => self.indexOf(value) === index)}
           />
         )}
+
+        {/* Add Chores */}
+        <button
+          type="button"
+          onClick={() => {
+            setTask('');
+            setAssignee('');
+            setDay(new Date().toISOString());
+            setEditChore(null);
+            setShowForm(true);
+          }}
+          className="bg-transparent text-black hover:text-gray-600 w-5 h-5"
+        >
+          <AddIcon />
+        </button>
+        {/* End of Add Chores */}
       </header>
+
       <main className="flex flex-col gap-4 mt-4 flex-grow">
+        {/* Showing the Modal Here */}
+        {showForm && (
+          <Modal
+            onClose={resetForm}
+            taskHandler={(e) => setTask(e.target.value)}
+            assigneeHandler={(e) => setAssignee(e.target.value)}
+            setDay={setDay}
+            taskValue={task}
+            assigneeValue={assignee}
+            dayValue={day}
+            handleAddChore={(e) => {
+              e.preventDefault();
+              handleAddChore();
+            }}
+            handleUpdateChore={(e) => {
+              e.preventDefault();
+              handleUpdateChore();
+            }}
+            editChore={editChore}
+          />
+        )}
+
         {filteredChores
           .sort((a, b) => {
             if (a.completed !== b.completed) {
@@ -283,49 +338,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
           })}
       </main>
 
-      <footer className="flex justify-around items-center mt-4 border-t pt-2">
-        <div>
-          <button
-            onClick={() => {
-              setTask('');
-              setAssignee('');
-              setDay(new Date().toISOString());
-              setEditChore(null);
-              setShowForm(true);
-            }}
-            className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
-            type="button"
-          >
-            <AddIcon />
-          </button>
-          {showForm && (
-            <Modal
-              onClose={resetForm}
-              taskHandler={(e) => setTask(e.target.value)}
-              assigneeHandler={(e) => setAssignee(e.target.value)}
-              setDay={setDay}
-              taskValue={task}
-              assigneeValue={assignee}
-              dayValue={day}
-              handleAddChore={(e) => {
-                e.preventDefault();
-                handleAddChore();
-              }}
-              handleUpdateChore={(e) => {
-                e.preventDefault();
-                handleUpdateChore();
-              }}
-              editChore={editChore}
-            />
-          )}
-        </div>
-        <button
-          className="bg-slate-500 py-[10px] px-[32px] text-white hover:bg-slate-600"
-          onClick={handleSwapChores}
-        >
-          <SwapIcon />
-        </button>
-      </footer>
+      <footer className="flex justify-around items-center mt-4 border-t pt-2"></footer>
     </div>
   );
 }
