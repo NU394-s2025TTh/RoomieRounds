@@ -27,7 +27,12 @@ function ViewHouseholdsPage({ user, handleGoogleSignIn }: ViewHouseholdsPageProp
               ...value,
             }),
           );
-          setHouseholds(loadedHouses);
+
+          // Utilized GitHub Copilot for filtering logic
+          const userHouseholds = loadedHouses.filter((household) =>
+            household.members.some((member) => member.uid === user.uid),
+          );
+          setHouseholds(userHouseholds);
         }
       });
     }
