@@ -124,19 +124,29 @@ function App() {
     const confirmable = window.confirm('Are you sure you want to shuffle the chores?');
     if (!confirmable) return;
 
-    const assignees = chores.map((c) => c.assignee);
-    const shuffled = [...assignees].sort(() => Math.random() - 0.5);
+    const uniqueAssignees = [...new Set(chores.map((c) => c.assignee))];
+    if (uniqueAssignees.length === 0) return;
 
-    const updatedChores = chores.map((chore, i) => {
-      const newAssignee = shuffled[i];
-      return {
-        ...chore,
-        assignee: newAssignee,
-        color: `${getColorForAssignee(newAssignee)} bg-opacity-20`,
-      };
-    });
+    const shuffledChores = [...chores].sort(() => Math.random() - 0.5);
 
-    updatedChores.forEach((chore) => {
+    const distributedChores: Chore[] = [];
+    const countPerAssignee = Math.floor(shuffledChores.length / uniqueAssignees.length);
+    let remaining = shuffledChores.length % uniqueAssignees.length;
+
+    let index = 0;
+    for (const assignee of uniqueAssignees) {
+      const numChores = countPerAssignee + (remaining > 0 ? 1 : 0);
+      if (remaining > 0) remaining--;
+
+      for (let i = 0; i < numChores; i++) {
+        const chore = { ...shuffledChores[index++] };
+        chore.assignee = assignee;
+        chore.color = `${getColorForAssignee(assignee)} bg-opacity-20`;
+        distributedChores.push(chore);
+      }
+    }
+
+    distributedChores.forEach((chore) => {
       if (chore.id) {
         const choreRef = ref(db, `chores/${chore.id}`);
         update(choreRef, {
@@ -146,7 +156,7 @@ function App() {
       }
     });
 
-    setChores(updatedChores);
+    setChores(distributedChores);
   };
 
   const handleDeleteChore = async (choreId: string) => {
