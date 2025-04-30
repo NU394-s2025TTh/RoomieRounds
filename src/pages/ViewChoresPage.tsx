@@ -11,10 +11,6 @@ import { Chore } from '../types';
 import { getColorForAssignee } from '../utils/getColorForAssignee';
 import { formatDueDate } from '../utils/getHumanReadableDay';
 
-// TODO:
-// Fetch proper chores from Firebase for the current household
-// only display the chores if the user is logged in and a member of the household
-
 interface ViewChoresPageProps {
   user: User | null;
 }
@@ -106,7 +102,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
       completed: editChore.completed,
     };
 
-    const choreRef = ref(db, `households/${household}/chores${editChore.id}`);
+    const choreRef = ref(db, `households/${household}/chores/${editChore.id}`);
     await update(choreRef, updatedChore);
 
     const updatedChores = chores.map((chore) =>
