@@ -337,8 +337,6 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
             );
           })}
       </main>
-
-      <footer className="flex justify-around items-center mt-4 border-t pt-2"></footer>
     </div>
   );
 }
