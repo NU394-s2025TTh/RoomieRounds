@@ -53,7 +53,7 @@ function App() {
           <Route
             path="/"
             element={
-              <ViewHouseholdsPage user={user} handleGoogleSignIn={handleGoogleSignIn} />
+              <JoinHouseholdPage user={user} handleGoogleSignIn={handleGoogleSignIn} />
             }
           />
           <Route
@@ -62,7 +62,12 @@ function App() {
               <ViewHouseholdsPage user={user} handleGoogleSignIn={handleGoogleSignIn} />
             }
           />
-          <Route path="/join-household" element={<JoinHouseholdPage user={user} />} />
+          <Route
+            path="/join-household"
+            element={
+              <JoinHouseholdPage user={user} handleGoogleSignIn={handleGoogleSignIn} />
+            }
+          />
           <Route
             path="/view-chores/:household"
             element={<ViewChoresPage user={user} />}

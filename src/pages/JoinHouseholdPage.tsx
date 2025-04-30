@@ -8,9 +8,10 @@ import { Household } from '../types';
 
 interface JoinHouseholdsPageProps {
   user: User | null;
+  handleGoogleSignIn: () => void;
 }
 
-function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
+function JoinHouseholdPage({ user, handleGoogleSignIn }: JoinHouseholdsPageProps) {
   const [households, setHouseholds] = useState<Household[]>([]);
   const [showJoinHouseholdModal, setShowJoinHouseholdModal] = useState(false);
   const [showAddHouseholdModal, setShowAddHouseholdModal] = useState(false);
@@ -42,6 +43,27 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
     setShowJoinHouseholdModal(false);
     setSelectedHousehold(null);
   };
+
+  {
+    /* {!user && <p> Please sign in to access households to join! </p>} */
+  }
+  if (!user) {
+    return (
+      <div className="relative h-screen bg-slate-100 overflow-hidden">
+        {/* Login Content */}
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center">
+          <h2 className="text-3xl font-bold mb-4">Welcome!</h2>
+          <p className="text-lg mb-4">Sign in to access households</p>
+          <button
+            onClick={handleGoogleSignIn}
+            className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition text-sm"
+          >
+            Sign In with Google
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-between flex-grow">
@@ -82,7 +104,6 @@ function JoinHouseholdPage({ user }: JoinHouseholdsPageProps) {
             <span>+</span>
           </button>
         )}
-        {!user && <p> Please sign in to access households to join! </p>}
 
         {showAddHouseholdModal && (
           <AddModal
