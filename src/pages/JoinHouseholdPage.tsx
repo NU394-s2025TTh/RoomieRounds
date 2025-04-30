@@ -44,9 +44,6 @@ function JoinHouseholdPage({ user, handleGoogleSignIn }: JoinHouseholdsPageProps
     setSelectedHousehold(null);
   };
 
-  {
-    /* {!user && <p> Please sign in to access households to join! </p>} */
-  }
   if (!user) {
     return (
       <div className="relative h-screen bg-slate-100 overflow-hidden">

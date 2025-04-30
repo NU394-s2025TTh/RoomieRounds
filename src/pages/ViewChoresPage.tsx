@@ -30,11 +30,11 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
   const [completedFilter, setCompletedFilter] = useState<Status>('all');
   const [assigneeFilter, setAssigneeFilter] = useState<string>('all');
 
-  // Household query parameter from the URL
+  // Household
   const { household } = useParams<{ household: string }>();
-
   const [householdName, setHouseholdName] = useState<string>('');
 
+  // Get reference to household we want to view chores for
   useEffect(() => {
     if (household) {
       const householdRef = ref(db, `households/${household}`);
@@ -47,6 +47,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     }
   }, [household]);
 
+  // Get chores for the household
   useEffect(() => {
     console.log(household);
 
@@ -68,10 +69,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     });
   }, [household]);
 
-  useEffect(() => {
-    handleApplyFilters(completedFilter, assigneeFilter);
-  }, [chores, completedFilter, assigneeFilter]);
-
+  // Handle adding chores
   const handleAddChore = async () => {
     if (!task || !assignee || !day) return;
 
@@ -90,6 +88,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     resetForm();
   };
 
+  // Handle updating chores
   const handleUpdateChore = async () => {
     if (!task || !assignee || !day || !editChore) return;
 
@@ -113,25 +112,36 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     resetForm();
   };
 
+  // Handle swapping chores
   const handleSwapChores = () => {
     const confirmable = window.confirm('Are you sure you want to shuffle the chores?');
     if (!confirmable) return;
 
-    const assignees = chores.map((c) => c.assignee);
-    const shuffled = [...assignees].sort(() => Math.random() - 0.5);
+    const uniqueAssignees = [...new Set(chores.map((c) => c.assignee))];
+    if (uniqueAssignees.length === 0) return;
 
-    const updatedChores = chores.map((chore, i) => {
-      const newAssignee = shuffled[i];
-      return {
-        ...chore,
-        assignee: newAssignee,
-        color: `${getColorForAssignee(newAssignee)} bg-opacity-20`,
-      };
-    });
+    const shuffledChores = [...chores].sort(() => Math.random() - 0.5);
 
-    updatedChores.forEach((chore) => {
+    const distributedChores: Chore[] = [];
+    const countPerAssignee = Math.floor(shuffledChores.length / uniqueAssignees.length);
+    let remaining = shuffledChores.length % uniqueAssignees.length;
+
+    let index = 0;
+    for (const assignee of uniqueAssignees) {
+      const numChores = countPerAssignee + (remaining > 0 ? 1 : 0);
+      if (remaining > 0) remaining--;
+
+      for (let i = 0; i < numChores; i++) {
+        const chore = { ...shuffledChores[index++] };
+        chore.assignee = assignee;
+        chore.color = `${getColorForAssignee(assignee)} bg-opacity-20`;
+        distributedChores.push(chore);
+      }
+    }
+
+    distributedChores.forEach((chore) => {
       if (chore.id) {
-        const choreRef = ref(db, `households/${household}/chores/${chore.id}`);
+        const choreRef = ref(db, `chores/${chore.id}`);
         update(choreRef, {
           assignee: chore.assignee,
           color: chore.color,
@@ -139,9 +149,10 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
       }
     });
 
-    setChores(updatedChores);
+    setChores(distributedChores);
   };
 
+  // Handle editing chores
   const handleEditChore = (chore: Chore) => {
     if (editChore && editChore.id === chore.id) {
       resetForm();
@@ -154,6 +165,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     }
   };
 
+  // Handle deleting chores
   const handleDeleteChore = async (choreId: string) => {
     const confirmable = window.confirm('Are you sure you want to delete this chore?');
     if (!confirmable) return;
@@ -164,6 +176,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     setChores((prev) => prev.filter((chore) => chore.id !== choreId));
   };
 
+  // Handle applying filters
   const handleApplyFilters = (status: Status, assignee: string) => {
     let filtered = [...chores];
 
@@ -180,6 +193,10 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     setFilteredChores(filtered);
     setShowFilters(false);
   };
+
+  useEffect(() => {
+    handleApplyFilters(completedFilter, assigneeFilter);
+  }, [chores, completedFilter, assigneeFilter]);
 
   const resetForm = () => {
     setTask('');
