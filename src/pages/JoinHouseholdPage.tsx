@@ -76,7 +76,7 @@ function JoinHouseholdPage({ user, handleGoogleSignIn }: JoinHouseholdsPageProps
                 <button
                   onClick={() => handleShowJoinModal(household)}
                   style={{ border: '2px solid black' }}
-                  className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm hover:bg-gray-200 text-center font-[Inter] text-xs`}
+                  className={`flex items-center justify-center gap-2 w-full p-4 bg-sky-200 rounded-xl shadow-sm hover:bg-sky-300 text-center font-[Inter] text-xs`}
                 >
                   <span>{household.name}</span>
                 </button>
@@ -98,7 +98,7 @@ function JoinHouseholdPage({ user, handleGoogleSignIn }: JoinHouseholdsPageProps
           <button
             onClick={() => setShowAddHouseholdModal(true)}
             style={{ border: '2px solid black' }}
-            className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm hover:bg-gray-200 text-center font-[Inter] text-xs`}
+            className={`flex items-center justify-center gap-2 w-full p-4 bg-emerald-200 rounded-xl shadow-sm hover:bg-emerald-300 text-center font-[Inter] text-xs`}
           >
             <span>+</span>
           </button>

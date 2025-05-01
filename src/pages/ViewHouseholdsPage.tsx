@@ -66,7 +66,7 @@ function ViewHouseholdsPage({ user, handleGoogleSignIn }: ViewHouseholdsPageProp
               key={idx}
               onClick={() => navigate(`/view-chores/${household.id}`)}
               style={{ border: '2px solid black' }}
-              className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm hover:bg-gray-200 text-center text-xs`}
+              className={`flex items-center justify-center gap-2 w-full p-4 bg-sky-200 rounded-xl shadow-sm hover:bg-sky-300 text-center text-xs`}
             >
               <span>{household.name}</span>
             </button>
