@@ -9,10 +9,9 @@ import { Household } from '../types';
 interface AddModalProps {
   onClose: () => void;
   user: User | null;
-  household_id: string;
 }
 
-const AddModal: React.FC<AddModalProps> = ({ onClose, user, household_id }) => {
+const AddModal: React.FC<AddModalProps> = ({ onClose, user }) => {
   const navigate = useNavigate();
   const [householdName, setHouseholdName] = useState('');
 
@@ -41,6 +40,12 @@ const AddModal: React.FC<AddModalProps> = ({ onClose, user, household_id }) => {
       await set(newHouseholdRef, newHousehold);
 
       onClose();
+      const household_id = newHouseholdRef.key;
+      if (!household_id) {
+        console.error('Household ID is null. Cannot navigate to view chores.');
+        return;
+      }
+
       navigate(`/view-chores/${household_id}`);
     }
   };
