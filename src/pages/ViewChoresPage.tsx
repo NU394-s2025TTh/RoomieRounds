@@ -208,7 +208,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
 
   return (
     <div className="flex flex-col justify-between flex-grow">
-      <header className="flex items-center justify-between p-4">
+      <header className="flex items-center justify-between pr-4 pl-2 pt-4">
         {/* Household Name */}
         <h1 className="text-2xl font-bold">{householdName}</h1>
 

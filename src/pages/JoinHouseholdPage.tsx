@@ -65,6 +65,8 @@ function JoinHouseholdPage({ user, handleGoogleSignIn }: JoinHouseholdsPageProps
   return (
     <div className="flex flex-col justify-between flex-grow">
       <main className="flex flex-col gap-4 mt-4 flex-grow">
+        <h2 className="text-2xl font-bold text-left pl-2">Open Households</h2>
+
         {user &&
           households.map((household, idx) => {
             console.log(household.name);
