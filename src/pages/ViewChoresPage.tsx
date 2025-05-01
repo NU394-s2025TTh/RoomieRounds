@@ -13,9 +13,10 @@ import { formatDueDate } from '../utils/getHumanReadableDay';
 
 interface ViewChoresPageProps {
   user: User | null;
+  handleGoogleSignIn: () => void;
 }
 
-function ViewChoresPage({ user }: ViewChoresPageProps) {
+function ViewChoresPage({ user, handleGoogleSignIn }: ViewChoresPageProps) {
   // State for chores
   const [chores, setChores] = useState<Chore[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -114,7 +115,7 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
 
   // Handle swapping chores
   const handleSwapChores = () => {
-    const confirmable = window.confirm('Are you sure you want to shuffle the chores?');
+    const confirmable = window.confirm('Are you sure you want to redistribute chores?');
     if (!confirmable) return;
 
     const uniqueAssignees = [...new Set(chores.map((c) => c.assignee))];
@@ -206,57 +207,77 @@ function ViewChoresPage({ user }: ViewChoresPageProps) {
     setShowForm(false);
   };
 
+  if (!user) {
+    return (
+      <div className="relative h-screen bg-slate-100 overflow-hidden">
+        {/* Login Content */}
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center">
+          <h2 className="text-3xl font-bold mb-4">Welcome!</h2>
+          <p className="text-lg mb-4">Sign in to access households</p>
+          <button
+            onClick={handleGoogleSignIn}
+            className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition text-sm"
+          >
+            Sign In with Google
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col justify-between flex-grow">
-      <header className="flex items-center justify-between p-4">
+      <header className="flex items-center justify-between pr-4 pl-2 pt-4">
         {/* Household Name */}
         <h1 className="text-2xl font-bold">{householdName}</h1>
 
-        {/* Swap Chores */}
-        <button
-          type="button"
-          onClick={handleSwapChores}
-          className="bg-transparent justify-left p-1 text-black hover:text-gray-600"
-        >
-          <SwapIcon />
-        </button>
-        {/* End of swap chores */}
+        <div className="flex space-x-4">
+          {/* Swap Chores */}
+          <button
+            type="button"
+            onClick={handleSwapChores}
+            className="bg-transparent justify-left p-1 text-black hover:text-gray-600"
+          >
+            <SwapIcon />
+          </button>
+          {/* End of swap chores */}
 
-        {/* Filter Icon */}
-        <button onClick={() => setShowFilters(true)} type="button">
-          <FilterIcon />
-        </button>
-        {showFilters && (
-          <FilterModal
-            onClose={() => setShowFilters(false)}
-            onApplyFilters={(status, assignee) => {
-              setCompletedFilter(status);
-              setAssigneeFilter(assignee);
-              handleApplyFilters(status, assignee);
+          {/* Filter Icon */}
+          <button onClick={() => setShowFilters(true)} type="button">
+            <FilterIcon />
+          </button>
+          {showFilters && (
+            <FilterModal
+              onClose={() => setShowFilters(false)}
+              onApplyFilters={(status, assignee) => {
+                setCompletedFilter(status);
+                setAssigneeFilter(assignee);
+                handleApplyFilters(status, assignee);
+              }}
+              currentCompletedFilter={completedFilter}
+              currentAssigneeFilter={assigneeFilter}
+              assignees={chores
+                .map((chore) => chore.assignee)
+                .filter((value, index, self) => self.indexOf(value) === index)}
+            />
+          )}
+
+          {/* Add Chores */}
+          <button
+            type="button"
+            onClick={() => {
+              setTask('');
+              setAssignee('');
+              setDay(new Date().toISOString());
+              setEditChore(null);
+              setShowForm(true);
             }}
-            currentCompletedFilter={completedFilter}
-            currentAssigneeFilter={assigneeFilter}
-            assignees={chores
-              .map((chore) => chore.assignee)
-              .filter((value, index, self) => self.indexOf(value) === index)}
-          />
-        )}
-
-        {/* Add Chores */}
-        <button
-          type="button"
-          onClick={() => {
-            setTask('');
-            setAssignee('');
-            setDay(new Date().toISOString());
-            setEditChore(null);
-            setShowForm(true);
-          }}
-          className="bg-transparent text-black hover:text-gray-600 w-5 h-5"
-        >
-          <AddIcon />
-        </button>
-        {/* End of Add Chores */}
+            className="bg-transparent text-black hover:text-gray-600 w-5 h-5"
+          >
+            <AddIcon />
+          </button>
+          {/* End of Add Chores */}
+        </div>
       </header>
 
       <main className="flex flex-col gap-4 mt-4 flex-grow">

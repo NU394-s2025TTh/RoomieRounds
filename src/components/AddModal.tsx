@@ -1,6 +1,7 @@
 // Backend integration written with help of GitHub CoPilot
 import { User } from 'firebase/auth';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { db, push, ref, set } from '../firebase';
 import { Household } from '../types';
@@ -11,6 +12,7 @@ interface AddModalProps {
 }
 
 const AddModal: React.FC<AddModalProps> = ({ onClose, user }) => {
+  const navigate = useNavigate();
   const [householdName, setHouseholdName] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,6 +40,13 @@ const AddModal: React.FC<AddModalProps> = ({ onClose, user }) => {
       await set(newHouseholdRef, newHousehold);
 
       onClose();
+      const household_id = newHouseholdRef.key;
+      if (!household_id) {
+        console.error('Household ID is null. Cannot navigate to view chores.');
+        return;
+      }
+
+      navigate(`/view-chores/${household_id}`);
     }
   };
 

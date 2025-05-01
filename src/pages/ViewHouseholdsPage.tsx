@@ -59,13 +59,14 @@ function ViewHouseholdsPage({ user, handleGoogleSignIn }: ViewHouseholdsPageProp
   return (
     <div className="flex flex-col justify-between flex-grow">
       <main className="flex flex-col gap-4 mt-4 flex-grow">
+        <h2 className="text-2xl font-bold text-left pl-2">Your Households</h2>
         {households.map((household, idx) => {
           return (
             <button
               key={idx}
               onClick={() => navigate(`/view-chores/${household.id}`)}
               style={{ border: '2px solid black' }}
-              className={`flex items-center justify-center gap-2 w-full p-4 rounded-xl shadow-sm hover:bg-gray-200 text-center text-xs`}
+              className={`flex items-center justify-center gap-2 w-full p-4 bg-sky-200 rounded-xl shadow-sm hover:bg-sky-300 text-center text-xs`}
             >
               <span>{household.name}</span>
             </button>
