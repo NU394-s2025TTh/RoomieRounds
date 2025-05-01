@@ -110,6 +110,7 @@ function JoinHouseholdPage({ user, handleGoogleSignIn }: JoinHouseholdsPageProps
               setShowAddHouseholdModal(false);
             }}
             user={user}
+            household_id={selectedHousehold?.id || ''}
           />
         )}
       </main>

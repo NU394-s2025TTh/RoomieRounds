@@ -1,6 +1,7 @@
 // Backend integration written with help of GitHub CoPilot
 import { User } from 'firebase/auth';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { db, push, ref, set } from '../firebase';
 import { Household } from '../types';
@@ -8,9 +9,11 @@ import { Household } from '../types';
 interface AddModalProps {
   onClose: () => void;
   user: User | null;
+  household_id: string;
 }
 
-const AddModal: React.FC<AddModalProps> = ({ onClose, user }) => {
+const AddModal: React.FC<AddModalProps> = ({ onClose, user, household_id }) => {
+  const navigate = useNavigate();
   const [householdName, setHouseholdName] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,6 +41,7 @@ const AddModal: React.FC<AddModalProps> = ({ onClose, user }) => {
       await set(newHouseholdRef, newHousehold);
 
       onClose();
+      navigate(`/view-chores/${household_id}`);
     }
   };
 
